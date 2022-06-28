@@ -5,11 +5,11 @@ The goal is to assist with coordinating MF runs in D2R via Discord.
 
 Run Assist seeks to achieve the following:
 
--Provide a consistent way of listing participants and zones
+- Provide a consistent way of listing participants and zones
 
--Minimize time spent outside the game for the coordinator
+- Minimize time spent outside the game for the coordinator
 
--Have absolutely no hooks or interaction with D2R at all(so that we're at no risk of ban).  This is achieved by putting text on your system clipboard, which you then paste into the game.
+- Have absolutely no hooks or interaction with D2R at all(so that we're at no risk of ban).  This is achieved by putting text on your system clipboard, which you then paste into the game.
 
 - Provide a timer with warnings so that the runs can stay on track
 
