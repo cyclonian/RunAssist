@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -6,7 +7,8 @@ namespace PositiveChaos.RunAssist
     public partial class FrmMain : Form
     {
         protected RunAssistState _state = new RunAssistState();
-        CountdownTimer _timer = new CountdownTimer();
+        protected CountdownTimer _timer = new CountdownTimer();
+        protected KeyboardHook _hook = new KeyboardHook();
 
         public FrmMain()
         {
@@ -21,7 +23,7 @@ namespace PositiveChaos.RunAssist
             ReadStateContent(_state);
 
             if(_state.Zones.Count == 0)
-                _state.Zones.AddRange(new string[] { "Pits", "CS", "Chaos Sanctuary", "WSK", "Baal", "Pindle", "Shenk", "LK", "Cows", "Stony Tombs", "Trav" });
+                _state.Zones.AddRange(new string[] { "Baal", "Chaos Sanctuary", "CS", "Countess", "Cows", "Eldritch", "LK", "Lower Kurast", "Pindle", "Pits", "Shenk", "Stony Tombs", "Tal Tombs", "Travincal", "WSK" });
             if (_state.Notes.Count == 0)
                 _state.Notes.Add("{0} minute timed runs");
 
@@ -271,6 +273,8 @@ namespace PositiveChaos.RunAssist
             if(!decimal.TryParse(state.NumPadding, out dNumPadding))
                 dNumPadding = 2;
             numPadding.Value = dNumPadding;
+            //state.Keybinds = state.SerializableDictionary;
+            BindKeysFromState(state);
         }
 
         protected void PerformCurrentToClipboard()
@@ -405,6 +409,31 @@ namespace PositiveChaos.RunAssist
             btnStop.Enabled = !bVal;
         }
 
+        protected void BindKeysFromState(RunAssistState state)
+        {
+            // reset the hooks
+            if (_hook != null)
+                _hook.Dispose();
+            _hook = new KeyboardHook();
+            _hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+
+            if(state.KeybindStart.Key != Keys.None)
+                _hook.RegisterHotKey(state.KeybindStart.Modifiers, state.KeybindStart.Key);
+            if (state.KeybindStop.Key != Keys.None)
+                _hook.RegisterHotKey(state.KeybindStop.Modifiers, state.KeybindStop.Key);
+            if (state.KeybindNextGame.Key != Keys.None)
+                _hook.RegisterHotKey(state.KeybindNextGame.Modifiers, state.KeybindNextGame.Key);
+        }
+
+        protected void BindsKeys(KeyCombo kcStart, KeyCombo kcStop, KeyCombo kcNextGame)
+        {
+            // update the keybinds mapping
+            _state.KeybindStart = kcStart;
+            _state.KeybindStop = kcStop;
+            _state.KeybindNextGame = kcNextGame;
+            BindKeysFromState(_state);
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveState();
@@ -433,6 +462,11 @@ namespace PositiveChaos.RunAssist
 
             SaveState();
             PerformCurrentToClipboard();
+
+            using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_tick.wav"))
+            {
+                player.Play();
+            }
 
             btnStart.Focus();
         }
@@ -487,24 +521,35 @@ namespace PositiveChaos.RunAssist
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            SaveState();
+            if (!_timer.IsRunning)
+            {
+                SaveState();
 
-            Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
+                Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
 
-            tssMainLabel.Text = "Timer running";
-            _timer.Start();
+                using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_start.wav"))
+                {
+                    player.Play();
+                }
 
-            SetEnabled(false);
+                tssMainLabel.Text = "Timer running";
+                _timer.Start();
 
-            btnStop.Focus();
+                SetEnabled(false);
+
+                btnStop.Focus();
+            }
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            tssMainLabel.Text = "Timer stopped";
-            _timer.Pause();
-            SetEnabled(true);
-            btnStart.Focus();
+            if (_timer.IsRunning)
+            {
+                tssMainLabel.Text = "Timer stopped";
+                _timer.Pause();
+                SetEnabled(true);
+                btnStart.Focus();
+            }
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -541,6 +586,51 @@ namespace PositiveChaos.RunAssist
         private void btnRolesToClipboard_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
+        }
+
+        private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            KeyCombo keyCombo = new KeyCombo(e.Modifier, e.Key);
+            RunAssistKey key = RunAssistKey.None;
+            if (_state.KeybindStart.Modifiers == keyCombo.Modifiers && _state.KeybindStart.Key == keyCombo.Key)
+                key = RunAssistKey.Start;
+            else if (_state.KeybindStop.Modifiers == keyCombo.Modifiers && _state.KeybindStop.Key == keyCombo.Key)
+                key = RunAssistKey.Stop;
+            else if (_state.KeybindNextGame.Modifiers == keyCombo.Modifiers && _state.KeybindNextGame.Key == keyCombo.Key)
+                key = RunAssistKey.NextGame;
+
+            switch (key)
+            {
+                case RunAssistKey.Start:
+                    if (!_timer.IsRunning)
+                        btnStart_Click(sender, e);
+                    break;
+                case RunAssistKey.Stop:
+                    if (_timer.IsRunning)
+                        btnStop_Click(sender, e);
+                    break;
+                case RunAssistKey.NextGame:
+                    btnIncriment_Click(sender, e);
+                    break;
+                default: break;
+            }
+        }
+
+        private void btnKeyBinding_Click(object sender, EventArgs e)
+        {
+            FrmKeyBinding frm = new FrmKeyBinding();
+            frm.SetState(_state);
+            if (frm.ShowDialog(this) == DialogResult.OK)
+            {
+                // update the keybinds mapping
+                KeyCombo kcStart = frm.GetSelection(RunAssistKey.Start);
+                KeyCombo kcStop = frm.GetSelection(RunAssistKey.Stop);
+                KeyCombo kcNextGame = frm.GetSelection(RunAssistKey.NextGame);
+
+                BindsKeys(kcStart, kcStop, kcNextGame);
+
+                SaveState();
+            }
         }
     }
 }

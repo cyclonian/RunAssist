@@ -99,6 +99,7 @@
             this.tbWarningMsg2 = new System.Windows.Forms.TextBox();
             this.lblWarningMsg2 = new System.Windows.Forms.Label();
             this.btnRolesToClipboard = new System.Windows.Forms.Button();
+            this.btnKeyBinding = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numGameNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.statusStrip.SuspendLayout();
@@ -159,9 +160,9 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(363, 559);
+            this.btnSave.Location = new System.Drawing.Point(356, 559);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(153, 52);
+            this.btnSave.Size = new System.Drawing.Size(160, 52);
             this.btnSave.TabIndex = 35;
             this.btnSave.Text = "Save to File";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -533,7 +534,7 @@
             // 
             // lblWarningTime
             // 
-            this.lblWarningTime.Location = new System.Drawing.Point(12, 413);
+            this.lblWarningTime.Location = new System.Drawing.Point(11, 413);
             this.lblWarningTime.Name = "lblWarningTime";
             this.lblWarningTime.Size = new System.Drawing.Size(85, 23);
             this.lblWarningTime.TabIndex = 40;
@@ -563,7 +564,7 @@
             this.lblWarningMsg.Name = "lblWarningMsg";
             this.lblWarningMsg.Size = new System.Drawing.Size(85, 23);
             this.lblWarningMsg.TabIndex = 42;
-            this.lblWarningMsg.Text = "Warning Msg";
+            this.lblWarningMsg.Text = "Warn1 Msg";
             this.lblWarningMsg.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tbRunTime
@@ -757,7 +758,7 @@
             this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAbout.Location = new System.Drawing.Point(292, 558);
             this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(65, 52);
+            this.btnAbout.Size = new System.Drawing.Size(58, 52);
             this.btnAbout.TabIndex = 36;
             this.btnAbout.Text = "About...";
             this.btnAbout.UseVisualStyleBackColor = true;
@@ -773,7 +774,7 @@
             // 
             // lblWarningTime2
             // 
-            this.lblWarningTime2.Location = new System.Drawing.Point(13, 472);
+            this.lblWarningTime2.Location = new System.Drawing.Point(11, 472);
             this.lblWarningTime2.Name = "lblWarningTime2";
             this.lblWarningTime2.Size = new System.Drawing.Size(85, 23);
             this.lblWarningTime2.TabIndex = 66;
@@ -807,11 +808,23 @@
             this.btnRolesToClipboard.UseVisualStyleBackColor = true;
             this.btnRolesToClipboard.Click += new System.EventHandler(this.btnRolesToClipboard_Click);
             // 
+            // btnKeyBinding
+            // 
+            this.btnKeyBinding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnKeyBinding.Location = new System.Drawing.Point(356, 530);
+            this.btnKeyBinding.Name = "btnKeyBinding";
+            this.btnKeyBinding.Size = new System.Drawing.Size(160, 23);
+            this.btnKeyBinding.TabIndex = 72;
+            this.btnKeyBinding.Text = "Key Binding...";
+            this.btnKeyBinding.UseVisualStyleBackColor = true;
+            this.btnKeyBinding.Click += new System.EventHandler(this.btnKeyBinding_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(528, 636);
+            this.Controls.Add(this.btnKeyBinding);
             this.Controls.Add(this.btnRolesToClipboard);
             this.Controls.Add(this.tbWarningMsg2);
             this.Controls.Add(this.lblWarningMsg2);
@@ -967,5 +980,6 @@
         private TextBox tbWarningMsg2;
         private Label lblWarningMsg2;
         private Button btnRolesToClipboard;
+        private Button btnKeyBinding;
     }
 }

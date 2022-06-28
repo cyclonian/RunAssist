@@ -16,7 +16,7 @@ namespace PositiveChaos.RunAssist
         [XmlIgnore]
         public int Limit { get; } = LIMIT;
 
-        [XmlIgnore] 
+        [XmlIgnore]
         public string RootPath { get; set; } = string.Empty;
         [XmlIgnore]
         public string StateFileName { get; set; } = "RunAssist.xml";
@@ -49,7 +49,7 @@ namespace PositiveChaos.RunAssist
         [XmlElement("WarningTime2")]
         public string WarningTime2 { get; set; } = "0:30";
         [XmlElement("WarningMessage2")]
-        public string WarningMessage2{ get; set; } = "{0} remaining";
+        public string WarningMessage2 { get; set; } = "{0} remaining";
 
         [XmlElement("WarningAutoClipboard")]
         public bool WarningAutoClipboard { get; set; } = true;
@@ -71,6 +71,13 @@ namespace PositiveChaos.RunAssist
         [XmlArray("Notes")]
         [XmlArrayItem("Notes", typeof(string))]
         public List<string> Notes = new List<string>();
+
+        [XmlElement("KeybindStart")]
+        public KeyCombo KeybindStart { get; set; } = new KeyCombo();
+        [XmlElement("KeybindStop")]
+        public KeyCombo KeybindStop { get; set; } = new KeyCombo();
+        [XmlElement("KeybindNextGame")]
+        public KeyCombo KeybindNextGame { get; set; } = new KeyCombo();
 
         public override string ToString()
         {
@@ -121,6 +128,27 @@ namespace PositiveChaos.RunAssist
             }
 
             return sb.ToString();
+        }
+    }
+
+    [Serializable]
+    public class KeyCombo
+    {
+        [XmlElement("Modifiers")]
+        public ModifierKeys Modifiers { get; set; }
+        [XmlElement("Key")]
+        public Keys Key { get; set; }
+
+        public KeyCombo()
+        {
+            Modifiers = ModifierKeys.None;
+            Key = Keys.None;
+        }
+
+        public KeyCombo(ModifierKeys modifiers, Keys key)
+        {
+            Modifiers = modifiers;
+            Key = key;
         }
     }
 }
