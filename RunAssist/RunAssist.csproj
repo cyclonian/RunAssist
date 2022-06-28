@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>PositiveChaos.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <PackageIcon>ra.png</PackageIcon>
+    <ApplicationIcon>ra.ico</ApplicationIcon>
+    <Description>Tool for assisting D2R MF runs</Description>
+    <Copyright>GNU General Public License v3.0</Copyright>
+    <PackageProjectUrl>https://github.com/cyclonian/RunAssist</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/cyclonian/RunAssist</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="ra.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="audio_finish.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="audio_warning.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ra.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ra.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
