@@ -42,6 +42,10 @@
             this.cbNextGameKey = new System.Windows.Forms.ComboBox();
             this.checkNextGameAlt = new System.Windows.Forms.CheckBox();
             this.checkNextGameCtrl = new System.Windows.Forms.CheckBox();
+            this.checkCopyRoles = new System.Windows.Forms.CheckBox();
+            this.cbCopyRolesKey = new System.Windows.Forms.ComboBox();
+            this.checkCopyRolesAlt = new System.Windows.Forms.CheckBox();
+            this.checkCopyRolesCtrl = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cbStartTimerKey
@@ -88,6 +92,8 @@
             "0",
             "-",
             "=",
+            "[",
+            "]",
             "F1",
             "F2",
             "F3",
@@ -129,7 +135,7 @@
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(103, 193);
+            this.btnOk.Location = new System.Drawing.Point(103, 254);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 75;
@@ -140,7 +146,7 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(184, 193);
+            this.button1.Location = new System.Drawing.Point(184, 254);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 76;
@@ -213,6 +219,8 @@
             "0",
             "-",
             "=",
+            "[",
+            "]",
             "F1",
             "F2",
             "F3",
@@ -305,6 +313,8 @@
             "0",
             "-",
             "=",
+            "[",
+            "]",
             "F1",
             "F2",
             "F3",
@@ -342,11 +352,109 @@
             this.checkNextGameCtrl.Text = "CTRL";
             this.checkNextGameCtrl.UseVisualStyleBackColor = true;
             // 
+            // checkCopyRoles
+            // 
+            this.checkCopyRoles.AutoSize = true;
+            this.checkCopyRoles.Location = new System.Drawing.Point(12, 171);
+            this.checkCopyRoles.Name = "checkCopyRoles";
+            this.checkCopyRoles.Size = new System.Drawing.Size(85, 19);
+            this.checkCopyRoles.TabIndex = 89;
+            this.checkCopyRoles.Text = "Copy Roles";
+            this.checkCopyRoles.UseVisualStyleBackColor = true;
+            this.checkCopyRoles.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
+            // 
+            // cbCopyRolesKey
+            // 
+            this.cbCopyRolesKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbCopyRolesKey.FormattingEnabled = true;
+            this.cbCopyRolesKey.Items.AddRange(new object[] {
+            "",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "0",
+            "-",
+            "=",
+            "[",
+            "]",
+            "F1",
+            "F2",
+            "F3",
+            "F4",
+            "F5",
+            "F6",
+            "F7",
+            "F8",
+            "F9",
+            "F10",
+            "F11",
+            "F12"});
+            this.cbCopyRolesKey.Location = new System.Drawing.Point(103, 169);
+            this.cbCopyRolesKey.Name = "cbCopyRolesKey";
+            this.cbCopyRolesKey.Size = new System.Drawing.Size(75, 23);
+            this.cbCopyRolesKey.TabIndex = 88;
+            // 
+            // checkCopyRolesAlt
+            // 
+            this.checkCopyRolesAlt.AutoSize = true;
+            this.checkCopyRolesAlt.Location = new System.Drawing.Point(184, 181);
+            this.checkCopyRolesAlt.Name = "checkCopyRolesAlt";
+            this.checkCopyRolesAlt.Size = new System.Drawing.Size(45, 19);
+            this.checkCopyRolesAlt.TabIndex = 87;
+            this.checkCopyRolesAlt.Text = "ALT";
+            this.checkCopyRolesAlt.UseVisualStyleBackColor = true;
+            // 
+            // checkCopyRolesCtrl
+            // 
+            this.checkCopyRolesCtrl.AutoSize = true;
+            this.checkCopyRolesCtrl.Location = new System.Drawing.Point(184, 165);
+            this.checkCopyRolesCtrl.Name = "checkCopyRolesCtrl";
+            this.checkCopyRolesCtrl.Size = new System.Drawing.Size(53, 19);
+            this.checkCopyRolesCtrl.TabIndex = 86;
+            this.checkCopyRolesCtrl.Text = "CTRL";
+            this.checkCopyRolesCtrl.UseVisualStyleBackColor = true;
+            // 
             // FrmKeyBinding
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(271, 228);
+            this.ClientSize = new System.Drawing.Size(271, 289);
+            this.Controls.Add(this.checkCopyRoles);
+            this.Controls.Add(this.cbCopyRolesKey);
+            this.Controls.Add(this.checkCopyRolesAlt);
+            this.Controls.Add(this.checkCopyRolesCtrl);
             this.Controls.Add(this.checkNextGame);
             this.Controls.Add(this.cbNextGameKey);
             this.Controls.Add(this.checkNextGameAlt);
@@ -391,5 +499,9 @@
         private ComboBox cbNextGameKey;
         private CheckBox checkNextGameAlt;
         private CheckBox checkNextGameCtrl;
+        private CheckBox checkCopyRoles;
+        private ComboBox cbCopyRolesKey;
+        private CheckBox checkCopyRolesAlt;
+        private CheckBox checkCopyRolesCtrl;
     }
 }

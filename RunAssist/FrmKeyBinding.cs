@@ -19,10 +19,12 @@ namespace PositiveChaos.RunAssist
             checkStartTimer.Checked = true;
             checkStopTimer.Checked = true;
             checkNextGame.Checked = true;
+            checkCopyRoles.Checked = true;
 
             cbStartTimerKey.SelectedIndex = cbStartTimerKey.Items.IndexOf("0");
             cbStopTimerKey.SelectedIndex = cbStopTimerKey.Items.IndexOf("-");
             cbNextGameKey.SelectedIndex = cbNextGameKey.Items.IndexOf("=");
+            cbCopyRolesKey.SelectedIndex = cbCopyRolesKey.Items.IndexOf("]");
 
             checkStartTimerCtrl.Checked = true;
             checkStartTimerAlt.Checked = false;
@@ -30,6 +32,8 @@ namespace PositiveChaos.RunAssist
             checkStopTimerAlt.Checked = false;
             checkNextGameCtrl.Checked = true;
             checkNextGameAlt.Checked = false;
+            checkCopyRolesCtrl.Checked = true;
+            checkCopyRolesAlt.Checked = false;
         }
 
         public void CheckEnabled()
@@ -37,54 +41,33 @@ namespace PositiveChaos.RunAssist
             cbStartTimerKey.Enabled = checkStartTimerCtrl.Enabled = checkStartTimerAlt.Enabled = checkStartTimer.Checked;
             cbStopTimerKey.Enabled = checkStopTimerCtrl.Enabled = checkStopTimerAlt.Enabled = checkStopTimer.Checked;
             cbNextGameKey.Enabled = checkNextGameCtrl.Enabled = checkNextGameAlt.Enabled = checkNextGame.Checked;
+            cbCopyRolesKey.Enabled = checkCopyRolesCtrl.Enabled = checkCopyRolesAlt.Enabled = checkCopyRoles.Checked;
+        }
+
+        protected void SetState(KeyCombo kc, CheckBox check, ComboBox cbKey, CheckBox checkCtrl, CheckBox checkAlt)
+        {
+            if (kc == null || kc.Key == Keys.None)
+            {
+                check.Checked = false;
+                cbKey.SelectedIndex = 0;
+                checkCtrl.Checked = false;
+                checkAlt.Checked = false;
+            }
+            else
+            {
+                check.Checked = true;
+                cbKey.SelectedIndex = cbKey.Items.IndexOf(GetComboValue(kc.Key));
+                checkCtrl.Checked = (kc.Modifiers & RunAssist.ModifierKeys.Control) == RunAssist.ModifierKeys.Control;
+                checkAlt.Checked = (kc.Modifiers & RunAssist.ModifierKeys.Alt) == RunAssist.ModifierKeys.Alt;
+            }
         }
 
         public void SetState(RunAssistState state)
         {
-            if (state.KeybindStart == null || state.KeybindStart.Key == Keys.None)
-            {
-                checkStartTimer.Checked = false;
-                cbStartTimerKey.SelectedIndex = 0;
-                checkStartTimerCtrl.Checked = false;
-                checkStartTimerAlt.Checked = false;
-            }
-            else
-            {
-                checkStartTimer.Checked = true;
-                cbStartTimerKey.SelectedIndex = cbStartTimerKey.Items.IndexOf(GetComboValue(state.KeybindStart.Key));
-                checkStartTimerCtrl.Checked = (state.KeybindStart.Modifiers & RunAssist.ModifierKeys.Control) == RunAssist.ModifierKeys.Control;
-                checkStartTimerAlt.Checked = (state.KeybindStart.Modifiers & RunAssist.ModifierKeys.Alt) == RunAssist.ModifierKeys.Alt;
-            }
-
-            if (state.KeybindStop == null || state.KeybindStop.Key == Keys.None)
-            {
-                checkStopTimer.Checked = false;
-                cbStopTimerKey.SelectedIndex = 0;
-                checkStopTimerCtrl.Checked = false;
-                checkStopTimerAlt.Checked = false;
-            }
-            else
-            {
-                checkStopTimer.Checked = true;
-                cbStopTimerKey.SelectedIndex = cbStopTimerKey.Items.IndexOf(GetComboValue(state.KeybindStop.Key));
-                checkStopTimerCtrl.Checked = (state.KeybindStop.Modifiers & RunAssist.ModifierKeys.Control) == RunAssist.ModifierKeys.Control;
-                checkStopTimerAlt.Checked = (state.KeybindStop.Modifiers & RunAssist.ModifierKeys.Alt) == RunAssist.ModifierKeys.Alt;
-            }
-
-            if (state.KeybindNextGame == null || state.KeybindNextGame.Key == Keys.None)
-            {
-                checkNextGame.Checked = false;
-                cbNextGameKey.SelectedIndex = 0;
-                checkNextGameCtrl.Checked = false;
-                checkNextGameAlt.Checked = false;
-            }
-            else
-            {
-                checkNextGame.Checked = true;
-                cbNextGameKey.SelectedIndex = cbNextGameKey.Items.IndexOf(GetComboValue(state.KeybindNextGame.Key));
-                checkNextGameCtrl.Checked = (state.KeybindNextGame.Modifiers & RunAssist.ModifierKeys.Control) == RunAssist.ModifierKeys.Control;
-                checkNextGameAlt.Checked = (state.KeybindNextGame.Modifiers & RunAssist.ModifierKeys.Alt) == RunAssist.ModifierKeys.Alt;
-            }
+            SetState(state.KeybindStart, checkStartTimer, cbStartTimerKey, checkStartTimerCtrl, checkStartTimerAlt);
+            SetState(state.KeybindStop, checkStopTimer, cbStopTimerKey, checkStopTimerCtrl, checkStopTimerAlt);
+            SetState(state.KeybindNextGame, checkNextGame, cbNextGameKey, checkNextGameCtrl, checkNextGameAlt);
+            SetState(state.KeybindCopyRoles, checkCopyRoles, cbCopyRolesKey, checkCopyRolesCtrl, checkCopyRolesAlt);
         }
 
         protected string GetKey(ComboBox cb)
@@ -105,6 +88,14 @@ namespace PositiveChaos.RunAssist
                     if(szKey == "=")
                     {
                         szKey = "Oemplus";
+                    }
+                    if (szKey == "[")
+                    {
+                        szKey = "Oem4";
+                    }
+                    if (szKey == "]")
+                    {
+                        szKey = "Oem6";
                     }
                 }
             }
@@ -136,6 +127,14 @@ namespace PositiveChaos.RunAssist
                     if (szValue == "Oemplus")
                     {
                         szValue = "=";
+                    }
+                    if (szValue == "Oem4")
+                    {
+                        szValue = "[";
+                    }
+                    if (szValue == "Oem6")
+                    {
+                        szValue = "]";
                     }
                 }
             }
@@ -187,6 +186,17 @@ namespace PositiveChaos.RunAssist
                         if (checkNextGameAlt.Checked)
                             modifiers |= RunAssist.ModifierKeys.Alt;
                         key = Enum.Parse<Keys>(GetKey(cbNextGameKey));
+                        keyCombo = new KeyCombo(modifiers, key);
+                    }
+                    break;
+                case RunAssistKey.CopyRoles:
+                    if (checkCopyRoles.Checked)
+                    {
+                        if (checkCopyRolesCtrl.Checked)
+                            modifiers |= RunAssist.ModifierKeys.Control;
+                        if (checkCopyRolesAlt.Checked)
+                            modifiers |= RunAssist.ModifierKeys.Alt;
+                        key = Enum.Parse<Keys>(GetKey(cbCopyRolesKey));
                         keyCombo = new KeyCombo(modifiers, key);
                     }
                     break;

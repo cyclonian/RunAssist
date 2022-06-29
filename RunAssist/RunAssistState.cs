@@ -78,6 +78,8 @@ namespace PositiveChaos.RunAssist
         public KeyCombo KeybindStop { get; set; } = new KeyCombo();
         [XmlElement("KeybindNextGame")]
         public KeyCombo KeybindNextGame { get; set; } = new KeyCombo();
+        [XmlElement("KeybindCopyRoles")]
+        public KeyCombo KeybindCopyRoles { get; set; } = new KeyCombo();
 
         public override string ToString()
         {
@@ -85,7 +87,11 @@ namespace PositiveChaos.RunAssist
             int nGameNumber = 1;
             if (!int.TryParse(GameNumber, out nGameNumber))
                 nGameNumber = 1;
-            sb.AppendFormat("{0}{1} /// {2}{3}", GameName, nGameNumber.ToString("00"), Password, Environment.NewLine);
+            int nNumPadding = int.Parse(NumPadding);
+            string szPadding = string.Empty;
+            for (int i = 0; i < nNumPadding; i++)
+                szPadding += "0";
+            sb.AppendFormat("{0}{1} /// {2}{3}", GameName, nGameNumber.ToString(szPadding), Password, Environment.NewLine);
             if (!string.IsNullOrWhiteSpace(Region))
                 sb.AppendLine(Region);
             if (!string.IsNullOrWhiteSpace(Note))
@@ -124,7 +130,7 @@ namespace PositiveChaos.RunAssist
             {
                 if (Players.Length > i)
                     if (Players[i] != null && !Players[i].IsEmpty())
-                        sb.AppendFormat("[{0} - {1}]{2}", Players[i].Name, Players[i].Zones, Environment.NewLine);
+                        sb.AppendFormat("[{0} - {1}]", Players[i].Name, Players[i].Zones);
             }
 
             return sb.ToString();

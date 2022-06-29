@@ -423,16 +423,91 @@ namespace PositiveChaos.RunAssist
                 _hook.RegisterHotKey(state.KeybindStop.Modifiers, state.KeybindStop.Key);
             if (state.KeybindNextGame.Key != Keys.None)
                 _hook.RegisterHotKey(state.KeybindNextGame.Modifiers, state.KeybindNextGame.Key);
+            if (state.KeybindCopyRoles.Key != Keys.None)
+                _hook.RegisterHotKey(state.KeybindCopyRoles.Modifiers, state.KeybindCopyRoles.Key);
         }
 
-        protected void BindsKeys(KeyCombo kcStart, KeyCombo kcStop, KeyCombo kcNextGame)
+        protected void BindsKeys(KeyCombo kcStart, KeyCombo kcStop, KeyCombo kcNextGame, KeyCombo kcCopyRoles)
         {
             // update the keybinds mapping
             _state.KeybindStart = kcStart;
             _state.KeybindStop = kcStop;
             _state.KeybindNextGame = kcNextGame;
+            _state.KeybindCopyRoles = kcCopyRoles;
             BindKeysFromState(_state);
         }
+
+        protected void PerformStart()
+        {
+            if (!_timer.IsRunning)
+            {
+                SaveState();
+
+                Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
+
+                using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_start.wav"))
+                {
+                    player.Play();
+                }
+
+                tssMainLabel.Text = "Timer running";
+                _timer.Start();
+
+                SetEnabled(false);
+
+                btnStop.Focus();
+            }
+        }
+
+        protected void PerformStop()
+        {
+            if (_timer.IsRunning)
+            {
+                tssMainLabel.Text = "Timer stopped";
+                _timer.Pause();
+                SetEnabled(true);
+                btnStart.Focus();
+            }
+        }
+
+        protected void PerformNextGame(bool bIncrement = true)
+        {
+            if (_timer.IsRunning)
+                _timer.Stop();
+
+            tssMainLabel.Text = "Timer reset";
+            _timer.Reset();
+            lblTimer.Text = _timer.TimeLeftMsStr;
+
+            if (bIncrement)
+                numGameNumber.Value++;
+
+            btnIncriment.Enabled = true;
+            btnStart.Enabled = true;
+            btnStop.Enabled = true;
+            btnIncriment.Enabled = true;
+
+            if (bIncrement)
+            {
+                SaveState();
+                PerformCurrentToClipboard();
+
+                using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_tick.wav"))
+                {
+                    player.Play();
+                }
+            }
+
+            btnStart.Focus();
+        }
+
+        protected void PerformCopyRoles()
+        {
+            SaveState();
+            Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
+        }
+
+        #region Event Handlers
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -449,26 +524,7 @@ namespace PositiveChaos.RunAssist
 
         private void btnIncriment_Click(object sender, EventArgs e)
         {
-            tssMainLabel.Text = "Timer reset";
-            _timer.Reset();
-            lblTimer.Text = _timer.TimeLeftMsStr;
-
-            numGameNumber.Value++;
-
-            btnIncriment.Enabled = true;
-            btnStart.Enabled = true;
-            btnStop.Enabled = true;
-            btnIncriment.Enabled = true;
-
-            SaveState();
-            PerformCurrentToClipboard();
-
-            using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_tick.wav"))
-            {
-                player.Play();
-            }
-
-            btnStart.Focus();
+            PerformNextGame();
         }
 
         private void tbRunTime_Leave(object sender, EventArgs e)
@@ -521,47 +577,17 @@ namespace PositiveChaos.RunAssist
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if (!_timer.IsRunning)
-            {
-                SaveState();
-
-                Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
-
-                using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_start.wav"))
-                {
-                    player.Play();
-                }
-
-                tssMainLabel.Text = "Timer running";
-                _timer.Start();
-
-                SetEnabled(false);
-
-                btnStop.Focus();
-            }
+            PerformStart();
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            if (_timer.IsRunning)
-            {
-                tssMainLabel.Text = "Timer stopped";
-                _timer.Pause();
-                SetEnabled(true);
-                btnStart.Focus();
-            }
+            PerformStop();
         }
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-            tssMainLabel.Text = "Timer reset";
-            _timer.Reset();
-            lblTimer.Text = _timer.TimeLeftMsStr;
-            btnIncriment.Enabled = true;
-            btnStart.Enabled = true;
-            btnStop.Enabled = true;
-            btnIncriment.Enabled = true;
-            btnStart.Focus();
+            PerformNextGame(false);
         }
 
         private void btnClear_Clicked(object sender, EventArgs e)
@@ -585,7 +611,7 @@ namespace PositiveChaos.RunAssist
 
         private void btnRolesToClipboard_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
+            PerformCopyRoles();
         }
 
         private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
@@ -598,19 +624,24 @@ namespace PositiveChaos.RunAssist
                 key = RunAssistKey.Stop;
             else if (_state.KeybindNextGame.Modifiers == keyCombo.Modifiers && _state.KeybindNextGame.Key == keyCombo.Key)
                 key = RunAssistKey.NextGame;
+            else if (_state.KeybindCopyRoles.Modifiers == keyCombo.Modifiers && _state.KeybindCopyRoles.Key == keyCombo.Key)
+                key = RunAssistKey.CopyRoles;
 
             switch (key)
             {
                 case RunAssistKey.Start:
                     if (!_timer.IsRunning)
-                        btnStart_Click(sender, e);
+                        PerformStart();
                     break;
                 case RunAssistKey.Stop:
                     if (_timer.IsRunning)
-                        btnStop_Click(sender, e);
+                        PerformStop();
                     break;
                 case RunAssistKey.NextGame:
-                    btnIncriment_Click(sender, e);
+                    PerformNextGame();
+                    break;
+                case RunAssistKey.CopyRoles:
+                    PerformCopyRoles();
                     break;
                 default: break;
             }
@@ -626,11 +657,14 @@ namespace PositiveChaos.RunAssist
                 KeyCombo kcStart = frm.GetSelection(RunAssistKey.Start);
                 KeyCombo kcStop = frm.GetSelection(RunAssistKey.Stop);
                 KeyCombo kcNextGame = frm.GetSelection(RunAssistKey.NextGame);
+                KeyCombo kcCopyRoles = frm.GetSelection(RunAssistKey.CopyRoles);
 
-                BindsKeys(kcStart, kcStop, kcNextGame);
+                BindsKeys(kcStart, kcStop, kcNextGame, kcCopyRoles);
 
                 SaveState();
             }
         }
+
+        #endregion Event Handlers
     }
 }
