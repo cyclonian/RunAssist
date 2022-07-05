@@ -15,17 +15,13 @@ namespace PositiveChaos.RunAssist
         protected const int LIMIT = 8;
         [XmlIgnore]
         public int Limit { get; } = LIMIT;
-
         [XmlIgnore]
         public string RootPath { get; set; } = string.Empty;
         [XmlIgnore]
         public string StateFileName { get; set; } = "RunAssist.xml";
-
-
         [XmlArray("Players")]
         [XmlArrayItem("PlayerInfo", typeof(PlayerInfo))]
         public PlayerInfo[] Players = new PlayerInfo[LIMIT];
-
         [XmlElement("GameName")]
         public string GameName { get; set; } = string.Empty;
         [XmlIgnore]
@@ -34,12 +30,10 @@ namespace PositiveChaos.RunAssist
         public string NumPadding { get; set; } = "2";
         [XmlElement("Password")]
         public string Password { get; set; } = string.Empty;
-
         [XmlElement("Region")]
         public string Region { get; set; } = string.Empty;
         [XmlElement("Note")]
         public string Note { get; set; } = "{0} minute timed runs";
-
         [XmlElement("RunTime")]
         public string RunTime { get; set; } = "6:00";
         [XmlElement("WarningTime")]
@@ -50,11 +44,18 @@ namespace PositiveChaos.RunAssist
         public string WarningTime2 { get; set; } = "0:30";
         [XmlElement("WarningMessage2")]
         public string WarningMessage2 { get; set; } = "{0} remaining";
-
         [XmlElement("WarningAutoClipboard")]
         public bool WarningAutoClipboard { get; set; } = true;
         [XmlElement("TimeZone")]
         public string TimeZone { get; set; } = "EST";
+        [XmlElement("OverlayLocationX")]
+        public string OverlayLocationX { get; set; } = string.Empty;
+        [XmlElement("OverlayLocationY")]
+        public string OverlayLocationY { get; set; } = string.Empty;
+        [XmlElement("OverlayWidth")]
+        public string OverlayWidth { get; set; } = "300";
+        [XmlElement("OverlayHeight")]
+        public string OverlayHeight { get; set; } = "450";
 
         [XmlArray("GameNames")]
         [XmlArrayItem("GameNames", typeof(string))]
@@ -73,13 +74,15 @@ namespace PositiveChaos.RunAssist
         public List<string> Notes = new List<string>();
 
         [XmlElement("KeybindStart")]
-        public KeyCombo KeybindStart { get; set; } = new KeyCombo();
+        public KeyCombo KeybindStart { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.D0);
         [XmlElement("KeybindStop")]
-        public KeyCombo KeybindStop { get; set; } = new KeyCombo();
+        public KeyCombo KeybindStop { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.OemMinus);
         [XmlElement("KeybindNextGame")]
-        public KeyCombo KeybindNextGame { get; set; } = new KeyCombo();
+        public KeyCombo KeybindNextGame { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.Oemplus);
         [XmlElement("KeybindCopyRoles")]
-        public KeyCombo KeybindCopyRoles { get; set; } = new KeyCombo();
+        public KeyCombo KeybindCopyRoles { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.Oem6);
+        [XmlElement("KeybindOverlay")]
+        public KeyCombo KeybindOverlay { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.OemQuestion);
 
         public override string ToString()
         {
@@ -121,6 +124,23 @@ namespace PositiveChaos.RunAssist
             return sb.ToString();
         }
 
+        public string ToStringOverlayAssignments()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            int nGameNumber = 1;
+            if (!int.TryParse(GameNumber, out nGameNumber))
+                nGameNumber = 1;
+            int nNumPadding = int.Parse(NumPadding);
+            string szPadding = string.Empty;
+            for (int i = 0; i < nNumPadding; i++)
+                szPadding += "0";
+            sb.AppendFormat("{0}{1}{2}", GameName, nGameNumber.ToString(szPadding), Environment.NewLine);
+            sb.Append(ToStringRoles());
+
+            return sb.ToString();
+        }
+
         public string ToStringRoles(string szTimeleft = "")
         {
             StringBuilder sb = new StringBuilder();
@@ -130,7 +150,7 @@ namespace PositiveChaos.RunAssist
             {
                 if (Players.Length > i)
                     if (Players[i] != null && !Players[i].IsEmpty())
-                        sb.AppendFormat("[{0} - {1}]", Players[i].Name, Players[i].Zones);
+                        sb.AppendFormat("[{0} - {1}]{2}", Players[i].Name, Players[i].Zones, Environment.NewLine);
             }
 
             return sb.ToString();

@@ -26,6 +26,7 @@ namespace PositiveChaos.RunAssist
         Start = 1,
         Stop = 2,
         NextGame = 3,
-        CopyRoles = 4
+        CopyRoles = 4,
+        Overlay = 5
     }
 }

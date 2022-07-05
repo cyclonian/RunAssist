@@ -100,6 +100,7 @@
             this.lblWarningMsg2 = new System.Windows.Forms.Label();
             this.btnRolesToClipboard = new System.Windows.Forms.Button();
             this.btnKeyBinding = new System.Windows.Forms.Button();
+            this.btnAdjustOverlay = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numGameNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.statusStrip.SuspendLayout();
@@ -160,9 +161,9 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(356, 559);
+            this.btnSave.Location = new System.Drawing.Point(373, 559);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(160, 52);
+            this.btnSave.Size = new System.Drawing.Size(143, 52);
             this.btnSave.TabIndex = 35;
             this.btnSave.Text = "Save to File";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -756,9 +757,9 @@
             // btnAbout
             // 
             this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAbout.Location = new System.Drawing.Point(292, 558);
+            this.btnAbout.Location = new System.Drawing.Point(458, 5);
             this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(58, 52);
+            this.btnAbout.Size = new System.Drawing.Size(58, 24);
             this.btnAbout.TabIndex = 36;
             this.btnAbout.Text = "About...";
             this.btnAbout.UseVisualStyleBackColor = true;
@@ -811,19 +812,31 @@
             // btnKeyBinding
             // 
             this.btnKeyBinding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKeyBinding.Location = new System.Drawing.Point(356, 530);
+            this.btnKeyBinding.Location = new System.Drawing.Point(292, 559);
             this.btnKeyBinding.Name = "btnKeyBinding";
-            this.btnKeyBinding.Size = new System.Drawing.Size(160, 23);
+            this.btnKeyBinding.Size = new System.Drawing.Size(74, 51);
             this.btnKeyBinding.TabIndex = 72;
             this.btnKeyBinding.Text = "Key Binding...";
             this.btnKeyBinding.UseVisualStyleBackColor = true;
             this.btnKeyBinding.Click += new System.EventHandler(this.btnKeyBinding_Click);
+            // 
+            // btnAdjustOverlay
+            // 
+            this.btnAdjustOverlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAdjustOverlay.Location = new System.Drawing.Point(373, 529);
+            this.btnAdjustOverlay.Name = "btnAdjustOverlay";
+            this.btnAdjustOverlay.Size = new System.Drawing.Size(143, 23);
+            this.btnAdjustOverlay.TabIndex = 73;
+            this.btnAdjustOverlay.Text = "Adjust Overlay...";
+            this.btnAdjustOverlay.UseVisualStyleBackColor = true;
+            this.btnAdjustOverlay.Click += new System.EventHandler(this.btnAdjustOverlay_Click);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(528, 636);
+            this.Controls.Add(this.btnAdjustOverlay);
             this.Controls.Add(this.btnKeyBinding);
             this.Controls.Add(this.btnRolesToClipboard);
             this.Controls.Add(this.tbWarningMsg2);
@@ -899,6 +912,7 @@
             this.MinimizeBox = false;
             this.Name = "FrmMain";
             this.Text = "Run Assist";
+            this.LocationChanged += new System.EventHandler(this.FrmMain_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.numGameNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
             this.statusStrip.ResumeLayout(false);
@@ -981,5 +995,6 @@
         private Label lblWarningMsg2;
         private Button btnRolesToClipboard;
         private Button btnKeyBinding;
+        private Button btnAdjustOverlay;
     }
 }

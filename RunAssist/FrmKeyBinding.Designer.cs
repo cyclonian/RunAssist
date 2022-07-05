@@ -46,66 +46,16 @@
             this.cbCopyRolesKey = new System.Windows.Forms.ComboBox();
             this.checkCopyRolesAlt = new System.Windows.Forms.CheckBox();
             this.checkCopyRolesCtrl = new System.Windows.Forms.CheckBox();
+            this.checkOverlay = new System.Windows.Forms.CheckBox();
+            this.cbOverlayKey = new System.Windows.Forms.ComboBox();
+            this.checkOverlayAlt = new System.Windows.Forms.CheckBox();
+            this.checkOverlayCtrl = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cbStartTimerKey
             // 
             this.cbStartTimerKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbStartTimerKey.FormattingEnabled = true;
-            this.cbStartTimerKey.Items.AddRange(new object[] {
-            "",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "O",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0",
-            "-",
-            "=",
-            "[",
-            "]",
-            "F1",
-            "F2",
-            "F3",
-            "F4",
-            "F5",
-            "F6",
-            "F7",
-            "F8",
-            "F9",
-            "F10",
-            "F11",
-            "F12"});
             this.cbStartTimerKey.Location = new System.Drawing.Point(103, 15);
             this.cbStartTimerKey.Name = "cbStartTimerKey";
             this.cbStartTimerKey.Size = new System.Drawing.Size(75, 23);
@@ -135,7 +85,7 @@
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(103, 254);
+            this.btnOk.Location = new System.Drawing.Point(103, 327);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 75;
@@ -146,7 +96,7 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(184, 254);
+            this.button1.Location = new System.Drawing.Point(184, 327);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 76;
@@ -179,60 +129,6 @@
             // 
             this.cbStopTimerKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbStopTimerKey.FormattingEnabled = true;
-            this.cbStopTimerKey.Items.AddRange(new object[] {
-            "",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "O",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0",
-            "-",
-            "=",
-            "[",
-            "]",
-            "F1",
-            "F2",
-            "F3",
-            "F4",
-            "F5",
-            "F6",
-            "F7",
-            "F8",
-            "F9",
-            "F10",
-            "F11",
-            "F12"});
             this.cbStopTimerKey.Location = new System.Drawing.Point(103, 66);
             this.cbStopTimerKey.Name = "cbStopTimerKey";
             this.cbStopTimerKey.Size = new System.Drawing.Size(75, 23);
@@ -273,60 +169,6 @@
             // 
             this.cbNextGameKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbNextGameKey.FormattingEnabled = true;
-            this.cbNextGameKey.Items.AddRange(new object[] {
-            "",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "O",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0",
-            "-",
-            "=",
-            "[",
-            "]",
-            "F1",
-            "F2",
-            "F3",
-            "F4",
-            "F5",
-            "F6",
-            "F7",
-            "F8",
-            "F9",
-            "F10",
-            "F11",
-            "F12"});
             this.cbNextGameKey.Location = new System.Drawing.Point(103, 118);
             this.cbNextGameKey.Name = "cbNextGameKey";
             this.cbNextGameKey.Size = new System.Drawing.Size(75, 23);
@@ -367,60 +209,6 @@
             // 
             this.cbCopyRolesKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbCopyRolesKey.FormattingEnabled = true;
-            this.cbCopyRolesKey.Items.AddRange(new object[] {
-            "",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "O",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0",
-            "-",
-            "=",
-            "[",
-            "]",
-            "F1",
-            "F2",
-            "F3",
-            "F4",
-            "F5",
-            "F6",
-            "F7",
-            "F8",
-            "F9",
-            "F10",
-            "F11",
-            "F12"});
             this.cbCopyRolesKey.Location = new System.Drawing.Point(103, 169);
             this.cbCopyRolesKey.Name = "cbCopyRolesKey";
             this.cbCopyRolesKey.Size = new System.Drawing.Size(75, 23);
@@ -446,11 +234,55 @@
             this.checkCopyRolesCtrl.Text = "CTRL";
             this.checkCopyRolesCtrl.UseVisualStyleBackColor = true;
             // 
+            // checkOverlay
+            // 
+            this.checkOverlay.AutoSize = true;
+            this.checkOverlay.Location = new System.Drawing.Point(12, 226);
+            this.checkOverlay.Name = "checkOverlay";
+            this.checkOverlay.Size = new System.Drawing.Size(66, 19);
+            this.checkOverlay.TabIndex = 93;
+            this.checkOverlay.Text = "Overlay";
+            this.checkOverlay.UseVisualStyleBackColor = true;
+            this.checkOverlay.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
+            // 
+            // cbOverlayKey
+            // 
+            this.cbOverlayKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbOverlayKey.FormattingEnabled = true;
+            this.cbOverlayKey.Location = new System.Drawing.Point(103, 224);
+            this.cbOverlayKey.Name = "cbOverlayKey";
+            this.cbOverlayKey.Size = new System.Drawing.Size(75, 23);
+            this.cbOverlayKey.TabIndex = 92;
+            // 
+            // checkOverlayAlt
+            // 
+            this.checkOverlayAlt.AutoSize = true;
+            this.checkOverlayAlt.Location = new System.Drawing.Point(184, 236);
+            this.checkOverlayAlt.Name = "checkOverlayAlt";
+            this.checkOverlayAlt.Size = new System.Drawing.Size(45, 19);
+            this.checkOverlayAlt.TabIndex = 91;
+            this.checkOverlayAlt.Text = "ALT";
+            this.checkOverlayAlt.UseVisualStyleBackColor = true;
+            // 
+            // checkOverlayCtrl
+            // 
+            this.checkOverlayCtrl.AutoSize = true;
+            this.checkOverlayCtrl.Location = new System.Drawing.Point(184, 220);
+            this.checkOverlayCtrl.Name = "checkOverlayCtrl";
+            this.checkOverlayCtrl.Size = new System.Drawing.Size(53, 19);
+            this.checkOverlayCtrl.TabIndex = 90;
+            this.checkOverlayCtrl.Text = "CTRL";
+            this.checkOverlayCtrl.UseVisualStyleBackColor = true;
+            // 
             // FrmKeyBinding
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(271, 289);
+            this.ClientSize = new System.Drawing.Size(271, 362);
+            this.Controls.Add(this.checkOverlay);
+            this.Controls.Add(this.cbOverlayKey);
+            this.Controls.Add(this.checkOverlayAlt);
+            this.Controls.Add(this.checkOverlayCtrl);
             this.Controls.Add(this.checkCopyRoles);
             this.Controls.Add(this.cbCopyRolesKey);
             this.Controls.Add(this.checkCopyRolesAlt);
@@ -503,5 +335,9 @@
         private ComboBox cbCopyRolesKey;
         private CheckBox checkCopyRolesAlt;
         private CheckBox checkCopyRolesCtrl;
+        private CheckBox checkOverlay;
+        private ComboBox cbOverlayKey;
+        private CheckBox checkOverlayAlt;
+        private CheckBox checkOverlayCtrl;
     }
 }

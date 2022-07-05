@@ -9,6 +9,10 @@ namespace PositiveChaos.RunAssist
         protected RunAssistState _state = new RunAssistState();
         protected CountdownTimer _timer = new CountdownTimer();
         protected KeyboardHook _hook = new KeyboardHook();
+        protected FrmOverlay _frmOverlay = new FrmOverlay();
+        protected Point _overlayLocation = new Point();
+        protected Size _overlaySize = new Size();
+        protected FrmOverlayLocation _frmOverlayLocation = new FrmOverlayLocation();
 
         public FrmMain()
         {
@@ -29,12 +33,38 @@ namespace PositiveChaos.RunAssist
 
             SetListSources();
 
-            _timer.TimeChanged += () => lblTimer.Text = _timer.TimeLeftMsStr;
+            _timer.TimeChanged += () => HandleTimerChanged();
             _timer.CountdownFinished += () => HandleTimerFinished();
             _timer.CountdownWarning += () => HandleWarningEvent();
             _timer.CountdownWarning2 += () => HandleWarning2Event();
             _timer.StepMs = 77;
             ResetTimer();
+
+            _frmOverlay.Show(this);
+            _frmOverlay.Hide();
+            _frmOverlayLocation.Show(this);
+            _frmOverlayLocation.Hide();
+        }
+
+        protected void HandleTimerChanged()
+        {
+            lblTimer.Text = _timer.TimeLeftMsStr;
+            _frmOverlay.SetContent(lblTimer.Text);
+        }
+
+        protected void PerformOverlay()
+        {
+            if (_frmOverlay.Visible)
+            {
+                _frmOverlay.Hide();
+            }
+            else
+            {
+                _frmOverlay.Location = _overlayLocation;
+                _frmOverlay.Size = _overlaySize;
+                _frmOverlay.SetContent(lblTimer.Text, _state.ToStringOverlayAssignments());
+                _frmOverlay.Show(this);
+            }
         }
 
         protected void HandleTimerFinished()
@@ -43,6 +73,7 @@ namespace PositiveChaos.RunAssist
 
             _timer.Reset();
             lblTimer.Text = _timer.TimeLeftMsStr;
+            _frmOverlay.SetContent(lblTimer.Text);
             btnIncriment.Enabled = true;
             btnStart.Enabled = true;
             btnStop.Enabled = true;
@@ -269,11 +300,27 @@ namespace PositiveChaos.RunAssist
             tbWarningMsg.Text = state.WarningMessage;
             tbWarningMsg2.Text = state.WarningMessage2;
             tbTimezone.Text = state.TimeZone;
+
+            int nOverlayX = Location.X + Width;
+            if (!string.IsNullOrWhiteSpace(state.OverlayLocationX))
+                int.TryParse(state.OverlayLocationX, out nOverlayX);
+            int nOverlayY = Location.Y;
+            if (!string.IsNullOrWhiteSpace(state.OverlayLocationY))
+                int.TryParse(state.OverlayLocationY, out nOverlayY);
+            _overlayLocation = new Point(nOverlayX, nOverlayY);
+
+            int nOverlayWidth = 300;
+            if (!string.IsNullOrWhiteSpace(state.OverlayWidth))
+                int.TryParse(state.OverlayWidth, out nOverlayWidth);
+            int nOverlayHeight = 450;
+            if (!string.IsNullOrWhiteSpace(state.OverlayHeight))
+                int.TryParse(state.OverlayHeight, out nOverlayHeight);
+            _overlaySize = new Size(nOverlayWidth, nOverlayHeight);
+
             decimal dNumPadding = 0;
             if(!decimal.TryParse(state.NumPadding, out dNumPadding))
                 dNumPadding = 2;
             numPadding.Value = dNumPadding;
-            //state.Keybinds = state.SerializableDictionary;
             BindKeysFromState(state);
         }
 
@@ -332,6 +379,8 @@ namespace PositiveChaos.RunAssist
             File.WriteAllText(Path.Combine(_state.RootPath, _state.StateFileName), szXml);
 
             SetListSources();
+
+            //_frmOverlay.SetContent(_state.)
         }
 
         protected void AddPlayerName(ComboBox combo)
@@ -363,6 +412,7 @@ namespace PositiveChaos.RunAssist
             if (!_timer.IsRunning)
             {
                 lblTimer.Text = tbRunTime.Text;
+                _frmOverlay.SetContent(lblTimer.Text);
                 int nRunMinutes = 0;
                 int nRunSeconds = 0;
                 string szRunTime = tbRunTime.Text;
@@ -425,15 +475,18 @@ namespace PositiveChaos.RunAssist
                 _hook.RegisterHotKey(state.KeybindNextGame.Modifiers, state.KeybindNextGame.Key);
             if (state.KeybindCopyRoles.Key != Keys.None)
                 _hook.RegisterHotKey(state.KeybindCopyRoles.Modifiers, state.KeybindCopyRoles.Key);
+            if (state.KeybindOverlay.Key != Keys.None)
+                _hook.RegisterHotKey(state.KeybindOverlay.Modifiers, state.KeybindOverlay.Key);
         }
 
-        protected void BindsKeys(KeyCombo kcStart, KeyCombo kcStop, KeyCombo kcNextGame, KeyCombo kcCopyRoles)
+        protected void BindsKeys(KeyCombo kcStart, KeyCombo kcStop, KeyCombo kcNextGame, KeyCombo kcCopyRoles, KeyCombo kcOverlay)
         {
             // update the keybinds mapping
             _state.KeybindStart = kcStart;
             _state.KeybindStop = kcStop;
             _state.KeybindNextGame = kcNextGame;
             _state.KeybindCopyRoles = kcCopyRoles;
+            _state.KeybindOverlay = kcOverlay;
             BindKeysFromState(_state);
         }
 
@@ -497,6 +550,9 @@ namespace PositiveChaos.RunAssist
                     player.Play();
                 }
             }
+
+            _frmOverlay.SetContent(lblTimer.Text, _state.ToStringOverlayAssignments());
+
 
             btnStart.Focus();
         }
@@ -626,6 +682,8 @@ namespace PositiveChaos.RunAssist
                 key = RunAssistKey.NextGame;
             else if (_state.KeybindCopyRoles.Modifiers == keyCombo.Modifiers && _state.KeybindCopyRoles.Key == keyCombo.Key)
                 key = RunAssistKey.CopyRoles;
+            else if (_state.KeybindOverlay.Modifiers == keyCombo.Modifiers && _state.KeybindOverlay.Key == keyCombo.Key)
+                key = RunAssistKey.Overlay;
 
             switch (key)
             {
@@ -643,6 +701,9 @@ namespace PositiveChaos.RunAssist
                 case RunAssistKey.CopyRoles:
                     PerformCopyRoles();
                     break;
+                case RunAssistKey.Overlay:
+                    PerformOverlay();
+                    break;
                 default: break;
             }
         }
@@ -658,11 +719,38 @@ namespace PositiveChaos.RunAssist
                 KeyCombo kcStop = frm.GetSelection(RunAssistKey.Stop);
                 KeyCombo kcNextGame = frm.GetSelection(RunAssistKey.NextGame);
                 KeyCombo kcCopyRoles = frm.GetSelection(RunAssistKey.CopyRoles);
+                KeyCombo kcOverlay = frm.GetSelection(RunAssistKey.Overlay);
 
-                BindsKeys(kcStart, kcStop, kcNextGame, kcCopyRoles);
+                BindsKeys(kcStart, kcStop, kcNextGame, kcCopyRoles, kcOverlay);
 
                 SaveState();
             }
+        }
+
+        private void btnAdjustOverlay_Click(object sender, EventArgs e)
+        {
+            _frmOverlayLocation.Location = _overlayLocation;
+            _frmOverlayLocation.Size = _overlaySize;
+            if(_frmOverlayLocation.ShowDialog(this) == DialogResult.OK)
+            {
+                _overlayLocation = _frmOverlayLocation.Location;
+                _overlaySize = _frmOverlayLocation.Size;
+
+                _state.OverlayLocationX = _overlayLocation.X.ToString();
+                _state.OverlayLocationY = _overlayLocation.Y.ToString();
+                _state.OverlayWidth = _overlaySize.Width.ToString();
+                _state.OverlayHeight = _overlaySize.Height.ToString();
+
+                SaveState();
+            }
+        }
+
+        private void FrmMain_LocationChanged(object sender, EventArgs e)
+        {
+            int nOverlayX = Location.X + Width;
+            int nOverlayY = Location.Y;
+            if (string.IsNullOrWhiteSpace(_state.OverlayLocationX) && string.IsNullOrWhiteSpace(_state.OverlayLocationY))
+                _overlayLocation = new Point(nOverlayX, nOverlayY);
         }
 
         #endregion Event Handlers

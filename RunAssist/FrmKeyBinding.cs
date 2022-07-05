@@ -15,16 +15,25 @@ namespace PositiveChaos.RunAssist
         public FrmKeyBinding()
         {
             InitializeComponent();
+            string[] arrKeys = new string[] { "", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "[", "]", "/", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" };
+
+            cbStartTimerKey.Items.AddRange(arrKeys);
+            cbStopTimerKey.Items.AddRange(arrKeys);
+            cbNextGameKey.Items.AddRange(arrKeys);
+            cbCopyRolesKey.Items.AddRange(arrKeys);
+            cbOverlayKey.Items.AddRange(arrKeys);
 
             checkStartTimer.Checked = true;
             checkStopTimer.Checked = true;
             checkNextGame.Checked = true;
             checkCopyRoles.Checked = true;
+            checkOverlay.Checked = true;
 
             cbStartTimerKey.SelectedIndex = cbStartTimerKey.Items.IndexOf("0");
             cbStopTimerKey.SelectedIndex = cbStopTimerKey.Items.IndexOf("-");
             cbNextGameKey.SelectedIndex = cbNextGameKey.Items.IndexOf("=");
             cbCopyRolesKey.SelectedIndex = cbCopyRolesKey.Items.IndexOf("]");
+            cbOverlayKey.SelectedIndex = cbOverlayKey.Items.IndexOf("/");
 
             checkStartTimerCtrl.Checked = true;
             checkStartTimerAlt.Checked = false;
@@ -34,6 +43,8 @@ namespace PositiveChaos.RunAssist
             checkNextGameAlt.Checked = false;
             checkCopyRolesCtrl.Checked = true;
             checkCopyRolesAlt.Checked = false;
+            checkOverlayCtrl.Checked = true;
+            checkOverlayAlt.Checked = false;
         }
 
         public void CheckEnabled()
@@ -42,6 +53,7 @@ namespace PositiveChaos.RunAssist
             cbStopTimerKey.Enabled = checkStopTimerCtrl.Enabled = checkStopTimerAlt.Enabled = checkStopTimer.Checked;
             cbNextGameKey.Enabled = checkNextGameCtrl.Enabled = checkNextGameAlt.Enabled = checkNextGame.Checked;
             cbCopyRolesKey.Enabled = checkCopyRolesCtrl.Enabled = checkCopyRolesAlt.Enabled = checkCopyRoles.Checked;
+            cbOverlayKey.Enabled = checkOverlayCtrl.Enabled = checkOverlayAlt.Enabled = checkOverlay.Checked;
         }
 
         protected void SetState(KeyCombo kc, CheckBox check, ComboBox cbKey, CheckBox checkCtrl, CheckBox checkAlt)
@@ -68,6 +80,7 @@ namespace PositiveChaos.RunAssist
             SetState(state.KeybindStop, checkStopTimer, cbStopTimerKey, checkStopTimerCtrl, checkStopTimerAlt);
             SetState(state.KeybindNextGame, checkNextGame, cbNextGameKey, checkNextGameCtrl, checkNextGameAlt);
             SetState(state.KeybindCopyRoles, checkCopyRoles, cbCopyRolesKey, checkCopyRolesCtrl, checkCopyRolesAlt);
+            SetState(state.KeybindOverlay, checkOverlay, cbOverlayKey, checkOverlayCtrl, checkOverlayAlt);
         }
 
         protected string GetKey(ComboBox cb)
@@ -81,21 +94,25 @@ namespace PositiveChaos.RunAssist
                     string szNumeric = "0123456789";
                     if (szNumeric.Contains(szKey))
                         szKey = "D" + szKey;
-                    if(szKey == "-")
+                    else if(szKey == "-")
                     {
                         szKey = "OemMinus";
                     }
-                    if(szKey == "=")
+                    else if(szKey == "=")
                     {
                         szKey = "Oemplus";
                     }
-                    if (szKey == "[")
+                    else if (szKey == "[")
                     {
                         szKey = "Oem4";
                     }
-                    if (szKey == "]")
+                    else if (szKey == "]")
                     {
                         szKey = "Oem6";
+                    }
+                    else if (szKey == "/")
+                    {
+                        szKey = "OemQuestion";
                     }
                 }
             }
@@ -120,21 +137,25 @@ namespace PositiveChaos.RunAssist
                     List<string> numeric = new List<string>() { "D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9" };
                     if (numeric.Contains(szValue))
                         szValue = szValue.Substring(1);
-                    if (szValue == "OemMinus")
+                    else if (szValue == "OemMinus")
                     {
                         szValue = "-";
                     }
-                    if (szValue == "Oemplus")
+                    else if (szValue == "Oemplus")
                     {
                         szValue = "=";
                     }
-                    if (szValue == "Oem4")
+                    else if (szValue == "Oem4" || szValue == "OemOpenBrackets")
                     {
                         szValue = "[";
                     }
-                    if (szValue == "Oem6")
+                    else if (szValue == "Oem6" || szValue == "OemCloseBrackets")
                     {
                         szValue = "]";
+                    }
+                    else if (szValue == "OemQuestion")
+                    {
+                        szValue = "/";
                     }
                 }
             }
@@ -197,6 +218,17 @@ namespace PositiveChaos.RunAssist
                         if (checkCopyRolesAlt.Checked)
                             modifiers |= RunAssist.ModifierKeys.Alt;
                         key = Enum.Parse<Keys>(GetKey(cbCopyRolesKey));
+                        keyCombo = new KeyCombo(modifiers, key);
+                    }
+                    break;
+                case RunAssistKey.Overlay:
+                    if (checkOverlay.Checked)
+                    {
+                        if (checkOverlayCtrl.Checked)
+                            modifiers |= RunAssist.ModifierKeys.Control;
+                        if (checkOverlayAlt.Checked)
+                            modifiers |= RunAssist.ModifierKeys.Alt;
+                        key = Enum.Parse<Keys>(GetKey(cbOverlayKey));
                         keyCombo = new KeyCombo(modifiers, key);
                     }
                     break;
