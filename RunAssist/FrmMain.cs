@@ -1,3 +1,5 @@
+using System.Media;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.Serialization;
@@ -13,14 +15,23 @@ namespace PositiveChaos.RunAssist
         protected Point _overlayLocation = new Point();
         protected Size _overlaySize = new Size();
         protected FrmOverlayLocation _frmOverlayLocation = new FrmOverlayLocation();
+        protected SoundPlayer _playerStart = new SoundPlayer();
+        protected SoundPlayer _playerFinish = new SoundPlayer();
+        protected SoundPlayer _playerWarning = new SoundPlayer();
+        protected SoundPlayer _playerTick = new SoundPlayer();
 
         public FrmMain()
         {
-            FileInfo fiExe = new FileInfo(Application.ExecutablePath);
+            FileInfo fiExe = new FileInfo(AppDomain.CurrentDomain.BaseDirectory);
             if (fiExe.Directory != null && fiExe.Directory.Exists)
                 _state.RootPath = fiExe.Directory.FullName;
 
             InitializeComponent();
+
+            PreloadSound(_playerStart, Properties.Resource.audio_start);
+            PreloadSound(_playerFinish, Properties.Resource.audio_finish);
+            PreloadSound(_playerWarning, Properties.Resource.audio_warning);
+            PreloadSound(_playerTick, Properties.Resource.audio_tick);
 
             _state = DeserializeFromFile();
 
@@ -65,11 +76,13 @@ namespace PositiveChaos.RunAssist
                 _frmOverlay.SetContent(lblTimer.Text, _state.ToStringOverlayAssignments());
                 _frmOverlay.Show(this);
             }
+
+            tssMainLabel.Text = "Toggle Overlay performed";
         }
 
         protected void HandleTimerFinished()
         {
-            SaveState();
+            SaveState(false, true);
 
             _timer.Reset();
             lblTimer.Text = _timer.TimeLeftMsStr;
@@ -79,30 +92,54 @@ namespace PositiveChaos.RunAssist
             btnStop.Enabled = true;
             btnIncriment.Enabled = true;
 
-            using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_finish.wav"))
-            {
-                player.Play();
-            }
-
+            PlaySoundFinish();
             tssMainLabel.Text = "Run finished";
         }
 
         protected void HandleWarningEvent()
         {
-            using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_warning.wav"))
-            {
-                player.Play();
-            }
+            PlaySoundWarning();
             Clipboard.SetText(string.Format(tbWarningMsg.Text, tbWarningTime.Text));
         }
 
         protected void HandleWarning2Event()
         {
-            using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_warning.wav"))
+            PlaySoundWarning();
+            Clipboard.SetText(string.Format(tbWarningMsg.Text, tbWarningTime2.Text));
+        }
+
+        protected void PlaySoundStart()
+        {
+            _playerStart.Play();
+        }
+
+        protected void PlaySoundFinish()
+        {
+            _playerFinish.Play();
+        }
+
+        protected void PlaySoundWarning()
+        {
+            _playerWarning.Play();
+        }
+
+        protected void PlaySoundTick()
+        {
+            _playerTick.Play();
+        }
+
+        protected void PreloadSound(SoundPlayer player, UnmanagedMemoryStream stream)
+        {
+            try
             {
-                player.Play();
+                
+                player.Stream = stream;
+                player.LoadAsync();
             }
-            Clipboard.SetText(string.Format(tbWarningMsg2.Text, tbWarningTime2.Text));
+            catch (Exception ex)
+            {
+                tssMainLabel.Text = ex.Message;
+            }
         }
 
         protected string SerializeToXml<T>(T source)
@@ -298,7 +335,7 @@ namespace PositiveChaos.RunAssist
             tbWarningTime.Text = state.WarningTime;
             tbWarningTime2.Text = state.WarningTime2;
             tbWarningMsg.Text = state.WarningMessage;
-            tbWarningMsg2.Text = state.WarningMessage2;
+            tbAdvert.Text = state.Advert;
             tbTimezone.Text = state.TimeZone;
 
             int nOverlayX = Location.X + Width;
@@ -329,7 +366,7 @@ namespace PositiveChaos.RunAssist
             Clipboard.SetText(_state.ToString());
         }
 
-        protected void SaveState()
+        protected void SaveState(bool bUpdateLists, bool bSaveToFile)
         {
             SetPlayerInfo(_state, comboPlayerName1, comboPlayerZones1, 0);
             SetPlayerInfo(_state, comboPlayerName2, comboPlayerZones2, 1);
@@ -370,17 +407,21 @@ namespace PositiveChaos.RunAssist
             _state.WarningTime = tbWarningTime.Text;
             _state.WarningTime2 = tbWarningTime2.Text;
             _state.WarningMessage = tbWarningMsg.Text;
-            _state.WarningMessage2 = tbWarningMsg2.Text;
+            _state.Advert = tbAdvert.Text;
             _state.TimeZone = tbTimezone.Text;
             _state.NumPadding = numPadding.Value.ToString();
 
-            string szXml = SerializeToXml<RunAssistState>(_state);
+            if (bSaveToFile)
+            {
+                string szXml = SerializeToXml<RunAssistState>(_state);
 
-            File.WriteAllText(Path.Combine(_state.RootPath, _state.StateFileName), szXml);
+                File.WriteAllText(Path.Combine(_state.RootPath, _state.StateFileName), szXml);
+            }
 
-            SetListSources();
+            if (bUpdateLists)
+                SetListSources();
 
-            //_frmOverlay.SetContent(_state.)
+            _frmOverlay.SetContent(lblTimer.Text, _state.ToStringOverlayAssignments());
         }
 
         protected void AddPlayerName(ComboBox combo)
@@ -467,26 +508,26 @@ namespace PositiveChaos.RunAssist
             _hook = new KeyboardHook();
             _hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
 
-            if(state.KeybindStart.Key != Keys.None)
-                _hook.RegisterHotKey(state.KeybindStart.Modifiers, state.KeybindStart.Key);
-            if (state.KeybindStop.Key != Keys.None)
-                _hook.RegisterHotKey(state.KeybindStop.Modifiers, state.KeybindStop.Key);
+            if(state.KeybindToggle.Key != Keys.None)
+                _hook.RegisterHotKey(state.KeybindToggle.Modifiers, state.KeybindToggle.Key);
             if (state.KeybindNextGame.Key != Keys.None)
                 _hook.RegisterHotKey(state.KeybindNextGame.Modifiers, state.KeybindNextGame.Key);
             if (state.KeybindCopyRoles.Key != Keys.None)
                 _hook.RegisterHotKey(state.KeybindCopyRoles.Modifiers, state.KeybindCopyRoles.Key);
             if (state.KeybindOverlay.Key != Keys.None)
                 _hook.RegisterHotKey(state.KeybindOverlay.Modifiers, state.KeybindOverlay.Key);
+            if (state.KeybindAdvert.Key != Keys.None)
+                _hook.RegisterHotKey(state.KeybindAdvert.Modifiers, state.KeybindAdvert.Key);
         }
 
-        protected void BindsKeys(KeyCombo kcStart, KeyCombo kcStop, KeyCombo kcNextGame, KeyCombo kcCopyRoles, KeyCombo kcOverlay)
+        protected void BindsKeys(KeyCombo kcToggle, KeyCombo kcNextGame, KeyCombo kcCopyRoles, KeyCombo kcOverlay, KeyCombo kcAdvert)
         {
             // update the keybinds mapping
-            _state.KeybindStart = kcStart;
-            _state.KeybindStop = kcStop;
+            _state.KeybindToggle = kcToggle;
             _state.KeybindNextGame = kcNextGame;
             _state.KeybindCopyRoles = kcCopyRoles;
             _state.KeybindOverlay = kcOverlay;
+            _state.KeybindAdvert = kcAdvert;
             BindKeysFromState(_state);
         }
 
@@ -494,15 +535,11 @@ namespace PositiveChaos.RunAssist
         {
             if (!_timer.IsRunning)
             {
-                SaveState();
+                SaveState(false, true);
 
                 Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
 
-                using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_start.wav"))
-                {
-                    player.Play();
-                }
-
+                PlaySoundStart();
                 tssMainLabel.Text = "Timer running";
                 _timer.Start();
 
@@ -523,7 +560,7 @@ namespace PositiveChaos.RunAssist
             }
         }
 
-        protected void PerformNextGame(bool bIncrement = true)
+        protected void PerformNextGame(bool bIncrement)
         {
             if (_timer.IsRunning)
                 _timer.Stop();
@@ -540,47 +577,50 @@ namespace PositiveChaos.RunAssist
             btnStop.Enabled = true;
             btnIncriment.Enabled = true;
 
+            SaveState(false, true);
+
             if (bIncrement)
             {
-                SaveState();
                 PerformCurrentToClipboard();
-
-                using (System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"audio_tick.wav"))
-                {
-                    player.Play();
-                }
+                PlaySoundTick();
             }
 
             _frmOverlay.SetContent(lblTimer.Text, _state.ToStringOverlayAssignments());
-
 
             btnStart.Focus();
         }
 
         protected void PerformCopyRoles()
         {
-            SaveState();
+            SaveState(false, false);
             Clipboard.SetText(_state.ToStringRoles(_timer.TimeLeftMsStr));
+            tssMainLabel.Text = "Copy Roles performed";
+        }
+
+        protected void PerformAdvert()
+        {
+            Clipboard.SetText(_state.Advert);
+            tssMainLabel.Text = "Advert performed";
         }
 
         #region Event Handlers
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            SaveState();
+            SaveState(true, true);
             //MessageBox.Show(this, "Saved to file.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             tssMainLabel.Text = "Saved to file";
         }
 
         private void btnToClipboard_Click(object sender, EventArgs e)
         {
-            SaveState();
+            SaveState(true, true);
             PerformCurrentToClipboard();
         }
 
         private void btnIncriment_Click(object sender, EventArgs e)
         {
-            PerformNextGame();
+            PerformNextGame(true);
         }
 
         private void tbRunTime_Leave(object sender, EventArgs e)
@@ -674,35 +714,36 @@ namespace PositiveChaos.RunAssist
         {
             KeyCombo keyCombo = new KeyCombo(e.Modifier, e.Key);
             RunAssistKey key = RunAssistKey.None;
-            if (_state.KeybindStart.Modifiers == keyCombo.Modifiers && _state.KeybindStart.Key == keyCombo.Key)
-                key = RunAssistKey.Start;
-            else if (_state.KeybindStop.Modifiers == keyCombo.Modifiers && _state.KeybindStop.Key == keyCombo.Key)
-                key = RunAssistKey.Stop;
+            if (_state.KeybindToggle.Modifiers == keyCombo.Modifiers && _state.KeybindToggle.Key == keyCombo.Key)
+                key = RunAssistKey.Toggle;
             else if (_state.KeybindNextGame.Modifiers == keyCombo.Modifiers && _state.KeybindNextGame.Key == keyCombo.Key)
                 key = RunAssistKey.NextGame;
             else if (_state.KeybindCopyRoles.Modifiers == keyCombo.Modifiers && _state.KeybindCopyRoles.Key == keyCombo.Key)
                 key = RunAssistKey.CopyRoles;
             else if (_state.KeybindOverlay.Modifiers == keyCombo.Modifiers && _state.KeybindOverlay.Key == keyCombo.Key)
                 key = RunAssistKey.Overlay;
+            else if (_state.KeybindAdvert.Modifiers == keyCombo.Modifiers && _state.KeybindAdvert.Key == keyCombo.Key)
+                key = RunAssistKey.Advert;
 
             switch (key)
             {
-                case RunAssistKey.Start:
-                    if (!_timer.IsRunning)
-                        PerformStart();
-                    break;
-                case RunAssistKey.Stop:
+                case RunAssistKey.Toggle:
                     if (_timer.IsRunning)
                         PerformStop();
+                    else
+                        PerformStart();
                     break;
                 case RunAssistKey.NextGame:
-                    PerformNextGame();
+                    PerformNextGame(true);
                     break;
                 case RunAssistKey.CopyRoles:
                     PerformCopyRoles();
                     break;
                 case RunAssistKey.Overlay:
                     PerformOverlay();
+                    break;
+                case RunAssistKey.Advert:
+                    PerformAdvert();
                     break;
                 default: break;
             }
@@ -715,15 +756,15 @@ namespace PositiveChaos.RunAssist
             if (frm.ShowDialog(this) == DialogResult.OK)
             {
                 // update the keybinds mapping
-                KeyCombo kcStart = frm.GetSelection(RunAssistKey.Start);
-                KeyCombo kcStop = frm.GetSelection(RunAssistKey.Stop);
+                KeyCombo kcToggle = frm.GetSelection(RunAssistKey.Toggle);
                 KeyCombo kcNextGame = frm.GetSelection(RunAssistKey.NextGame);
                 KeyCombo kcCopyRoles = frm.GetSelection(RunAssistKey.CopyRoles);
                 KeyCombo kcOverlay = frm.GetSelection(RunAssistKey.Overlay);
+                KeyCombo kcAdvert = frm.GetSelection(RunAssistKey.Advert);
 
-                BindsKeys(kcStart, kcStop, kcNextGame, kcCopyRoles, kcOverlay);
+                BindsKeys(kcToggle, kcNextGame, kcCopyRoles, kcOverlay, kcAdvert);
 
-                SaveState();
+                SaveState(false, false);
             }
         }
 
@@ -741,7 +782,7 @@ namespace PositiveChaos.RunAssist
                 _state.OverlayWidth = _overlaySize.Width.ToString();
                 _state.OverlayHeight = _overlaySize.Height.ToString();
 
-                SaveState();
+                SaveState(false, false);
             }
         }
 

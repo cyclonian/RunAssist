@@ -96,8 +96,8 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.tbWarningTime2 = new System.Windows.Forms.TextBox();
             this.lblWarningTime2 = new System.Windows.Forms.Label();
-            this.tbWarningMsg2 = new System.Windows.Forms.TextBox();
-            this.lblWarningMsg2 = new System.Windows.Forms.Label();
+            this.tbAdvert = new System.Windows.Forms.TextBox();
+            this.lblAdvert = new System.Windows.Forms.Label();
             this.btnRolesToClipboard = new System.Windows.Forms.Button();
             this.btnKeyBinding = new System.Windows.Forms.Button();
             this.btnAdjustOverlay = new System.Windows.Forms.Button();
@@ -782,22 +782,22 @@
             this.lblWarningTime2.Text = "Warn2 Time";
             this.lblWarningTime2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tbWarningMsg2
+            // tbAdvert
             // 
-            this.tbWarningMsg2.Location = new System.Drawing.Point(103, 501);
-            this.tbWarningMsg2.Name = "tbWarningMsg2";
-            this.tbWarningMsg2.Size = new System.Drawing.Size(182, 23);
-            this.tbWarningMsg2.TabIndex = 26;
-            this.tbWarningMsg2.Text = "{0} remaining";
+            this.tbAdvert.Location = new System.Drawing.Point(103, 501);
+            this.tbAdvert.Name = "tbAdvert";
+            this.tbAdvert.Size = new System.Drawing.Size(182, 23);
+            this.tbAdvert.TabIndex = 26;
+            this.tbAdvert.Text = "{0} remaining";
             // 
-            // lblWarningMsg2
+            // lblAdvert
             // 
-            this.lblWarningMsg2.Location = new System.Drawing.Point(11, 500);
-            this.lblWarningMsg2.Name = "lblWarningMsg2";
-            this.lblWarningMsg2.Size = new System.Drawing.Size(85, 23);
-            this.lblWarningMsg2.TabIndex = 68;
-            this.lblWarningMsg2.Text = "Warn2 Msg";
-            this.lblWarningMsg2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblAdvert.Location = new System.Drawing.Point(11, 500);
+            this.lblAdvert.Name = "lblAdvert";
+            this.lblAdvert.Size = new System.Drawing.Size(85, 23);
+            this.lblAdvert.TabIndex = 68;
+            this.lblAdvert.Text = "Advert";
+            this.lblAdvert.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnRolesToClipboard
             // 
@@ -839,8 +839,8 @@
             this.Controls.Add(this.btnAdjustOverlay);
             this.Controls.Add(this.btnKeyBinding);
             this.Controls.Add(this.btnRolesToClipboard);
-            this.Controls.Add(this.tbWarningMsg2);
-            this.Controls.Add(this.lblWarningMsg2);
+            this.Controls.Add(this.tbAdvert);
+            this.Controls.Add(this.lblAdvert);
             this.Controls.Add(this.tbWarningTime2);
             this.Controls.Add(this.lblWarningTime2);
             this.Controls.Add(this.btnAbout);
@@ -991,8 +991,8 @@
         private Button btnAbout;
         private TextBox tbWarningTime2;
         private Label lblWarningTime2;
-        private TextBox tbWarningMsg2;
-        private Label lblWarningMsg2;
+        private TextBox tbAdvert;
+        private Label lblAdvert;
         private Button btnRolesToClipboard;
         private Button btnKeyBinding;
         private Button btnAdjustOverlay;

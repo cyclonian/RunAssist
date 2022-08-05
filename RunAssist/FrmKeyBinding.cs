@@ -17,43 +17,43 @@ namespace PositiveChaos.RunAssist
             InitializeComponent();
             string[] arrKeys = new string[] { "", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "[", "]", "/", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" };
 
-            cbStartTimerKey.Items.AddRange(arrKeys);
-            cbStopTimerKey.Items.AddRange(arrKeys);
+            cbToggleTimerKey.Items.AddRange(arrKeys);
             cbNextGameKey.Items.AddRange(arrKeys);
             cbCopyRolesKey.Items.AddRange(arrKeys);
             cbOverlayKey.Items.AddRange(arrKeys);
+            cbAdvertKey.Items.AddRange(arrKeys);
 
-            checkStartTimer.Checked = true;
-            checkStopTimer.Checked = true;
+            checkToggleTimer.Checked = true;
             checkNextGame.Checked = true;
             checkCopyRoles.Checked = true;
             checkOverlay.Checked = true;
+            checkAdvert.Checked = true;
 
-            cbStartTimerKey.SelectedIndex = cbStartTimerKey.Items.IndexOf("0");
-            cbStopTimerKey.SelectedIndex = cbStopTimerKey.Items.IndexOf("-");
+            cbToggleTimerKey.SelectedIndex = cbToggleTimerKey.Items.IndexOf("0");
             cbNextGameKey.SelectedIndex = cbNextGameKey.Items.IndexOf("=");
             cbCopyRolesKey.SelectedIndex = cbCopyRolesKey.Items.IndexOf("]");
             cbOverlayKey.SelectedIndex = cbOverlayKey.Items.IndexOf("/");
+            cbAdvertKey.SelectedIndex = cbAdvertKey.Items.IndexOf("[");
 
-            checkStartTimerCtrl.Checked = true;
-            checkStartTimerAlt.Checked = false;
-            checkStopTimerCtrl.Checked = true;
-            checkStopTimerAlt.Checked = false;
+            checkToggleTimerCtrl.Checked = true;
+            checkToggleTimerAlt.Checked = false;
             checkNextGameCtrl.Checked = true;
             checkNextGameAlt.Checked = false;
             checkCopyRolesCtrl.Checked = true;
             checkCopyRolesAlt.Checked = false;
             checkOverlayCtrl.Checked = true;
             checkOverlayAlt.Checked = false;
+            checkAdvertCtrl.Checked = true;
+            checkAdvertAlt.Checked = false;
         }
 
         public void CheckEnabled()
         {
-            cbStartTimerKey.Enabled = checkStartTimerCtrl.Enabled = checkStartTimerAlt.Enabled = checkStartTimer.Checked;
-            cbStopTimerKey.Enabled = checkStopTimerCtrl.Enabled = checkStopTimerAlt.Enabled = checkStopTimer.Checked;
+            cbToggleTimerKey.Enabled = checkToggleTimerCtrl.Enabled = checkToggleTimerAlt.Enabled = checkToggleTimer.Checked;
             cbNextGameKey.Enabled = checkNextGameCtrl.Enabled = checkNextGameAlt.Enabled = checkNextGame.Checked;
             cbCopyRolesKey.Enabled = checkCopyRolesCtrl.Enabled = checkCopyRolesAlt.Enabled = checkCopyRoles.Checked;
             cbOverlayKey.Enabled = checkOverlayCtrl.Enabled = checkOverlayAlt.Enabled = checkOverlay.Checked;
+            cbAdvertKey.Enabled = checkAdvertCtrl.Enabled = checkAdvertAlt.Enabled = checkAdvert.Checked;
         }
 
         protected void SetState(KeyCombo kc, CheckBox check, ComboBox cbKey, CheckBox checkCtrl, CheckBox checkAlt)
@@ -76,11 +76,11 @@ namespace PositiveChaos.RunAssist
 
         public void SetState(RunAssistState state)
         {
-            SetState(state.KeybindStart, checkStartTimer, cbStartTimerKey, checkStartTimerCtrl, checkStartTimerAlt);
-            SetState(state.KeybindStop, checkStopTimer, cbStopTimerKey, checkStopTimerCtrl, checkStopTimerAlt);
+            SetState(state.KeybindToggle, checkToggleTimer, cbToggleTimerKey, checkToggleTimerCtrl, checkToggleTimerAlt);
             SetState(state.KeybindNextGame, checkNextGame, cbNextGameKey, checkNextGameCtrl, checkNextGameAlt);
             SetState(state.KeybindCopyRoles, checkCopyRoles, cbCopyRolesKey, checkCopyRolesCtrl, checkCopyRolesAlt);
             SetState(state.KeybindOverlay, checkOverlay, cbOverlayKey, checkOverlayCtrl, checkOverlayAlt);
+            SetState(state.KeybindAdvert, checkAdvert, cbAdvertKey, checkAdvertCtrl, checkAdvertAlt);
         }
 
         protected string GetKey(ComboBox cb)
@@ -88,7 +88,7 @@ namespace PositiveChaos.RunAssist
             string szKey = string.Empty;
             try
             {
-                if (cb != null)
+                if (cb != null && cb.SelectedIndex >= 0)
                 {
                     szKey = cb.Items[cb.SelectedIndex].ToString();
                     string szNumeric = "0123456789";
@@ -177,65 +177,38 @@ namespace PositiveChaos.RunAssist
 
             switch (runAssistKey)
             {
-                case RunAssistKey.Start:
-                    if (checkStartTimer.Checked)
-                    {
-                        if (checkStartTimerCtrl.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Control;
-                        if (checkStartTimerAlt.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Alt;
-                        key = Enum.Parse<Keys>(GetKey(cbStartTimerKey));
-                    }
-                    keyCombo = new KeyCombo(modifiers, key);
-                    break;
-                case RunAssistKey.Stop:
-                    if (checkStopTimer.Checked)
-                    {
-                        if (checkStopTimerCtrl.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Control;
-                        if (checkStopTimerAlt.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Alt;
-                        key = Enum.Parse<Keys>(GetKey(cbStopTimerKey));
-                        keyCombo = new KeyCombo(modifiers, key);
-                    }
+                case RunAssistKey.Toggle:
+                    GetSelection(checkToggleTimer, checkToggleTimerCtrl, checkToggleTimerAlt, cbToggleTimerKey, ref modifiers, ref key, ref keyCombo);
                     break;
                 case RunAssistKey.NextGame:
-                    if (checkNextGame.Checked)
-                    {
-                        if (checkNextGameCtrl.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Control;
-                        if (checkNextGameAlt.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Alt;
-                        key = Enum.Parse<Keys>(GetKey(cbNextGameKey));
-                        keyCombo = new KeyCombo(modifiers, key);
-                    }
+                    GetSelection(checkNextGame, checkNextGameCtrl, checkNextGameAlt, cbNextGameKey, ref modifiers, ref key, ref keyCombo);
                     break;
                 case RunAssistKey.CopyRoles:
-                    if (checkCopyRoles.Checked)
-                    {
-                        if (checkCopyRolesCtrl.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Control;
-                        if (checkCopyRolesAlt.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Alt;
-                        key = Enum.Parse<Keys>(GetKey(cbCopyRolesKey));
-                        keyCombo = new KeyCombo(modifiers, key);
-                    }
+                    GetSelection(checkCopyRoles, checkCopyRolesCtrl, checkCopyRolesAlt, cbCopyRolesKey, ref modifiers, ref key, ref keyCombo);
                     break;
                 case RunAssistKey.Overlay:
-                    if (checkOverlay.Checked)
-                    {
-                        if (checkOverlayCtrl.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Control;
-                        if (checkOverlayAlt.Checked)
-                            modifiers |= RunAssist.ModifierKeys.Alt;
-                        key = Enum.Parse<Keys>(GetKey(cbOverlayKey));
-                        keyCombo = new KeyCombo(modifiers, key);
-                    }
+                    GetSelection(checkOverlay, checkOverlayCtrl, checkOverlayAlt, cbOverlayKey, ref modifiers, ref key, ref keyCombo);
+                    break;
+                case RunAssistKey.Advert:
+                    GetSelection(checkAdvert, checkAdvertCtrl, checkAdvertAlt, cbAdvertKey, ref modifiers, ref key, ref keyCombo);
                     break;
                 default: break;
             }
 
             return keyCombo;
+        }
+
+        private void GetSelection(CheckBox check, CheckBox checkCtrl, CheckBox checkAlt, ComboBox cbKey, ref RunAssist.ModifierKeys modifiers, ref Keys key, ref KeyCombo keyCombo)
+        {
+            if (check.Checked)
+            {
+                if (checkCtrl.Checked)
+                    modifiers |= RunAssist.ModifierKeys.Control;
+                if (checkAlt.Checked)
+                    modifiers |= RunAssist.ModifierKeys.Alt;
+                key = Enum.Parse<Keys>(GetKey(cbKey));
+                keyCombo = new KeyCombo(modifiers, key);
+            }
         }
 
         private void check_CheckedChanged(object sender, EventArgs e)

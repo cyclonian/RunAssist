@@ -23,10 +23,10 @@ namespace PositiveChaos.RunAssist
     public enum RunAssistKey
     {
         None = 0,
-        Start = 1,
-        Stop = 2,
-        NextGame = 3,
-        CopyRoles = 4,
-        Overlay = 5
+        Toggle = 1,
+        NextGame = 2,
+        CopyRoles = 3,
+        Overlay = 4,
+        Advert = 5
     }
 }

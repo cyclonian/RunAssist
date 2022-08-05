@@ -28,16 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cbStartTimerKey = new System.Windows.Forms.ComboBox();
-            this.checkStartTimerAlt = new System.Windows.Forms.CheckBox();
-            this.checkStartTimerCtrl = new System.Windows.Forms.CheckBox();
+            this.cbToggleTimerKey = new System.Windows.Forms.ComboBox();
+            this.checkToggleTimerAlt = new System.Windows.Forms.CheckBox();
+            this.checkToggleTimerCtrl = new System.Windows.Forms.CheckBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.checkStartTimer = new System.Windows.Forms.CheckBox();
-            this.checkStopTimer = new System.Windows.Forms.CheckBox();
-            this.cbStopTimerKey = new System.Windows.Forms.ComboBox();
-            this.checkStopTimerAlt = new System.Windows.Forms.CheckBox();
-            this.checkStopTimerCtrl = new System.Windows.Forms.CheckBox();
+            this.checkToggleTimer = new System.Windows.Forms.CheckBox();
             this.checkNextGame = new System.Windows.Forms.CheckBox();
             this.cbNextGameKey = new System.Windows.Forms.ComboBox();
             this.checkNextGameAlt = new System.Windows.Forms.CheckBox();
@@ -50,36 +46,40 @@
             this.cbOverlayKey = new System.Windows.Forms.ComboBox();
             this.checkOverlayAlt = new System.Windows.Forms.CheckBox();
             this.checkOverlayCtrl = new System.Windows.Forms.CheckBox();
+            this.checkAdvert = new System.Windows.Forms.CheckBox();
+            this.cbAdvertKey = new System.Windows.Forms.ComboBox();
+            this.checkAdvertAlt = new System.Windows.Forms.CheckBox();
+            this.checkAdvertCtrl = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
-            // cbStartTimerKey
+            // cbToggleTimerKey
             // 
-            this.cbStartTimerKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbStartTimerKey.FormattingEnabled = true;
-            this.cbStartTimerKey.Location = new System.Drawing.Point(103, 15);
-            this.cbStartTimerKey.Name = "cbStartTimerKey";
-            this.cbStartTimerKey.Size = new System.Drawing.Size(75, 23);
-            this.cbStartTimerKey.TabIndex = 74;
+            this.cbToggleTimerKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbToggleTimerKey.FormattingEnabled = true;
+            this.cbToggleTimerKey.Location = new System.Drawing.Point(112, 15);
+            this.cbToggleTimerKey.Name = "cbToggleTimerKey";
+            this.cbToggleTimerKey.Size = new System.Drawing.Size(75, 23);
+            this.cbToggleTimerKey.TabIndex = 74;
             // 
-            // checkStartTimerAlt
+            // checkToggleTimerAlt
             // 
-            this.checkStartTimerAlt.AutoSize = true;
-            this.checkStartTimerAlt.Location = new System.Drawing.Point(184, 27);
-            this.checkStartTimerAlt.Name = "checkStartTimerAlt";
-            this.checkStartTimerAlt.Size = new System.Drawing.Size(45, 19);
-            this.checkStartTimerAlt.TabIndex = 73;
-            this.checkStartTimerAlt.Text = "ALT";
-            this.checkStartTimerAlt.UseVisualStyleBackColor = true;
+            this.checkToggleTimerAlt.AutoSize = true;
+            this.checkToggleTimerAlt.Location = new System.Drawing.Point(193, 27);
+            this.checkToggleTimerAlt.Name = "checkToggleTimerAlt";
+            this.checkToggleTimerAlt.Size = new System.Drawing.Size(45, 19);
+            this.checkToggleTimerAlt.TabIndex = 73;
+            this.checkToggleTimerAlt.Text = "ALT";
+            this.checkToggleTimerAlt.UseVisualStyleBackColor = true;
             // 
-            // checkStartTimerCtrl
+            // checkToggleTimerCtrl
             // 
-            this.checkStartTimerCtrl.AutoSize = true;
-            this.checkStartTimerCtrl.Location = new System.Drawing.Point(184, 11);
-            this.checkStartTimerCtrl.Name = "checkStartTimerCtrl";
-            this.checkStartTimerCtrl.Size = new System.Drawing.Size(53, 19);
-            this.checkStartTimerCtrl.TabIndex = 72;
-            this.checkStartTimerCtrl.Text = "CTRL";
-            this.checkStartTimerCtrl.UseVisualStyleBackColor = true;
+            this.checkToggleTimerCtrl.AutoSize = true;
+            this.checkToggleTimerCtrl.Location = new System.Drawing.Point(193, 11);
+            this.checkToggleTimerCtrl.Name = "checkToggleTimerCtrl";
+            this.checkToggleTimerCtrl.Size = new System.Drawing.Size(53, 19);
+            this.checkToggleTimerCtrl.TabIndex = 72;
+            this.checkToggleTimerCtrl.Text = "CTRL";
+            this.checkToggleTimerCtrl.UseVisualStyleBackColor = true;
             // 
             // btnOk
             // 
@@ -103,61 +103,21 @@
             this.button1.Text = "Cancel";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // checkStartTimer
+            // checkToggleTimer
             // 
-            this.checkStartTimer.AutoSize = true;
-            this.checkStartTimer.Location = new System.Drawing.Point(12, 17);
-            this.checkStartTimer.Name = "checkStartTimer";
-            this.checkStartTimer.Size = new System.Drawing.Size(83, 19);
-            this.checkStartTimer.TabIndex = 77;
-            this.checkStartTimer.Text = "Start Timer";
-            this.checkStartTimer.UseVisualStyleBackColor = true;
-            this.checkStartTimer.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
-            // 
-            // checkStopTimer
-            // 
-            this.checkStopTimer.AutoSize = true;
-            this.checkStopTimer.Location = new System.Drawing.Point(12, 68);
-            this.checkStopTimer.Name = "checkStopTimer";
-            this.checkStopTimer.Size = new System.Drawing.Size(83, 19);
-            this.checkStopTimer.TabIndex = 81;
-            this.checkStopTimer.Text = "Stop Timer";
-            this.checkStopTimer.UseVisualStyleBackColor = true;
-            this.checkStopTimer.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
-            // 
-            // cbStopTimerKey
-            // 
-            this.cbStopTimerKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbStopTimerKey.FormattingEnabled = true;
-            this.cbStopTimerKey.Location = new System.Drawing.Point(103, 66);
-            this.cbStopTimerKey.Name = "cbStopTimerKey";
-            this.cbStopTimerKey.Size = new System.Drawing.Size(75, 23);
-            this.cbStopTimerKey.TabIndex = 80;
-            // 
-            // checkStopTimerAlt
-            // 
-            this.checkStopTimerAlt.AutoSize = true;
-            this.checkStopTimerAlt.Location = new System.Drawing.Point(184, 78);
-            this.checkStopTimerAlt.Name = "checkStopTimerAlt";
-            this.checkStopTimerAlt.Size = new System.Drawing.Size(45, 19);
-            this.checkStopTimerAlt.TabIndex = 79;
-            this.checkStopTimerAlt.Text = "ALT";
-            this.checkStopTimerAlt.UseVisualStyleBackColor = true;
-            // 
-            // checkStopTimerCtrl
-            // 
-            this.checkStopTimerCtrl.AutoSize = true;
-            this.checkStopTimerCtrl.Location = new System.Drawing.Point(184, 62);
-            this.checkStopTimerCtrl.Name = "checkStopTimerCtrl";
-            this.checkStopTimerCtrl.Size = new System.Drawing.Size(53, 19);
-            this.checkStopTimerCtrl.TabIndex = 78;
-            this.checkStopTimerCtrl.Text = "CTRL";
-            this.checkStopTimerCtrl.UseVisualStyleBackColor = true;
+            this.checkToggleTimer.AutoSize = true;
+            this.checkToggleTimer.Location = new System.Drawing.Point(12, 17);
+            this.checkToggleTimer.Name = "checkToggleTimer";
+            this.checkToggleTimer.Size = new System.Drawing.Size(94, 19);
+            this.checkToggleTimer.TabIndex = 77;
+            this.checkToggleTimer.Text = "Toggle Timer";
+            this.checkToggleTimer.UseVisualStyleBackColor = true;
+            this.checkToggleTimer.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
             // 
             // checkNextGame
             // 
             this.checkNextGame.AutoSize = true;
-            this.checkNextGame.Location = new System.Drawing.Point(12, 120);
+            this.checkNextGame.Location = new System.Drawing.Point(12, 64);
             this.checkNextGame.Name = "checkNextGame";
             this.checkNextGame.Size = new System.Drawing.Size(85, 19);
             this.checkNextGame.TabIndex = 85;
@@ -169,7 +129,7 @@
             // 
             this.cbNextGameKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbNextGameKey.FormattingEnabled = true;
-            this.cbNextGameKey.Location = new System.Drawing.Point(103, 118);
+            this.cbNextGameKey.Location = new System.Drawing.Point(112, 62);
             this.cbNextGameKey.Name = "cbNextGameKey";
             this.cbNextGameKey.Size = new System.Drawing.Size(75, 23);
             this.cbNextGameKey.TabIndex = 84;
@@ -177,7 +137,7 @@
             // checkNextGameAlt
             // 
             this.checkNextGameAlt.AutoSize = true;
-            this.checkNextGameAlt.Location = new System.Drawing.Point(184, 130);
+            this.checkNextGameAlt.Location = new System.Drawing.Point(193, 74);
             this.checkNextGameAlt.Name = "checkNextGameAlt";
             this.checkNextGameAlt.Size = new System.Drawing.Size(45, 19);
             this.checkNextGameAlt.TabIndex = 83;
@@ -187,7 +147,7 @@
             // checkNextGameCtrl
             // 
             this.checkNextGameCtrl.AutoSize = true;
-            this.checkNextGameCtrl.Location = new System.Drawing.Point(184, 114);
+            this.checkNextGameCtrl.Location = new System.Drawing.Point(193, 58);
             this.checkNextGameCtrl.Name = "checkNextGameCtrl";
             this.checkNextGameCtrl.Size = new System.Drawing.Size(53, 19);
             this.checkNextGameCtrl.TabIndex = 82;
@@ -197,7 +157,7 @@
             // checkCopyRoles
             // 
             this.checkCopyRoles.AutoSize = true;
-            this.checkCopyRoles.Location = new System.Drawing.Point(12, 171);
+            this.checkCopyRoles.Location = new System.Drawing.Point(12, 115);
             this.checkCopyRoles.Name = "checkCopyRoles";
             this.checkCopyRoles.Size = new System.Drawing.Size(85, 19);
             this.checkCopyRoles.TabIndex = 89;
@@ -209,7 +169,7 @@
             // 
             this.cbCopyRolesKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbCopyRolesKey.FormattingEnabled = true;
-            this.cbCopyRolesKey.Location = new System.Drawing.Point(103, 169);
+            this.cbCopyRolesKey.Location = new System.Drawing.Point(112, 113);
             this.cbCopyRolesKey.Name = "cbCopyRolesKey";
             this.cbCopyRolesKey.Size = new System.Drawing.Size(75, 23);
             this.cbCopyRolesKey.TabIndex = 88;
@@ -217,7 +177,7 @@
             // checkCopyRolesAlt
             // 
             this.checkCopyRolesAlt.AutoSize = true;
-            this.checkCopyRolesAlt.Location = new System.Drawing.Point(184, 181);
+            this.checkCopyRolesAlt.Location = new System.Drawing.Point(193, 125);
             this.checkCopyRolesAlt.Name = "checkCopyRolesAlt";
             this.checkCopyRolesAlt.Size = new System.Drawing.Size(45, 19);
             this.checkCopyRolesAlt.TabIndex = 87;
@@ -227,7 +187,7 @@
             // checkCopyRolesCtrl
             // 
             this.checkCopyRolesCtrl.AutoSize = true;
-            this.checkCopyRolesCtrl.Location = new System.Drawing.Point(184, 165);
+            this.checkCopyRolesCtrl.Location = new System.Drawing.Point(193, 109);
             this.checkCopyRolesCtrl.Name = "checkCopyRolesCtrl";
             this.checkCopyRolesCtrl.Size = new System.Drawing.Size(53, 19);
             this.checkCopyRolesCtrl.TabIndex = 86;
@@ -237,7 +197,7 @@
             // checkOverlay
             // 
             this.checkOverlay.AutoSize = true;
-            this.checkOverlay.Location = new System.Drawing.Point(12, 226);
+            this.checkOverlay.Location = new System.Drawing.Point(12, 170);
             this.checkOverlay.Name = "checkOverlay";
             this.checkOverlay.Size = new System.Drawing.Size(66, 19);
             this.checkOverlay.TabIndex = 93;
@@ -249,7 +209,7 @@
             // 
             this.cbOverlayKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbOverlayKey.FormattingEnabled = true;
-            this.cbOverlayKey.Location = new System.Drawing.Point(103, 224);
+            this.cbOverlayKey.Location = new System.Drawing.Point(112, 168);
             this.cbOverlayKey.Name = "cbOverlayKey";
             this.cbOverlayKey.Size = new System.Drawing.Size(75, 23);
             this.cbOverlayKey.TabIndex = 92;
@@ -257,7 +217,7 @@
             // checkOverlayAlt
             // 
             this.checkOverlayAlt.AutoSize = true;
-            this.checkOverlayAlt.Location = new System.Drawing.Point(184, 236);
+            this.checkOverlayAlt.Location = new System.Drawing.Point(193, 180);
             this.checkOverlayAlt.Name = "checkOverlayAlt";
             this.checkOverlayAlt.Size = new System.Drawing.Size(45, 19);
             this.checkOverlayAlt.TabIndex = 91;
@@ -267,18 +227,62 @@
             // checkOverlayCtrl
             // 
             this.checkOverlayCtrl.AutoSize = true;
-            this.checkOverlayCtrl.Location = new System.Drawing.Point(184, 220);
+            this.checkOverlayCtrl.Location = new System.Drawing.Point(193, 164);
             this.checkOverlayCtrl.Name = "checkOverlayCtrl";
             this.checkOverlayCtrl.Size = new System.Drawing.Size(53, 19);
             this.checkOverlayCtrl.TabIndex = 90;
             this.checkOverlayCtrl.Text = "CTRL";
             this.checkOverlayCtrl.UseVisualStyleBackColor = true;
             // 
+            // checkAdvert
+            // 
+            this.checkAdvert.AutoSize = true;
+            this.checkAdvert.Location = new System.Drawing.Point(12, 222);
+            this.checkAdvert.Name = "checkAdvert";
+            this.checkAdvert.Size = new System.Drawing.Size(61, 19);
+            this.checkAdvert.TabIndex = 97;
+            this.checkAdvert.Text = "Advert";
+            this.checkAdvert.UseVisualStyleBackColor = true;
+            this.checkAdvert.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
+            // 
+            // cbAdvertKey
+            // 
+            this.cbAdvertKey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbAdvertKey.FormattingEnabled = true;
+            this.cbAdvertKey.Location = new System.Drawing.Point(112, 220);
+            this.cbAdvertKey.Name = "cbAdvertKey";
+            this.cbAdvertKey.Size = new System.Drawing.Size(75, 23);
+            this.cbAdvertKey.TabIndex = 96;
+            // 
+            // checkAdvertAlt
+            // 
+            this.checkAdvertAlt.AutoSize = true;
+            this.checkAdvertAlt.Location = new System.Drawing.Point(193, 232);
+            this.checkAdvertAlt.Name = "checkAdvertAlt";
+            this.checkAdvertAlt.Size = new System.Drawing.Size(45, 19);
+            this.checkAdvertAlt.TabIndex = 95;
+            this.checkAdvertAlt.Text = "ALT";
+            this.checkAdvertAlt.UseVisualStyleBackColor = true;
+            // 
+            // checkAdvertCtrl
+            // 
+            this.checkAdvertCtrl.AutoSize = true;
+            this.checkAdvertCtrl.Location = new System.Drawing.Point(193, 216);
+            this.checkAdvertCtrl.Name = "checkAdvertCtrl";
+            this.checkAdvertCtrl.Size = new System.Drawing.Size(53, 19);
+            this.checkAdvertCtrl.TabIndex = 94;
+            this.checkAdvertCtrl.Text = "CTRL";
+            this.checkAdvertCtrl.UseVisualStyleBackColor = true;
+            // 
             // FrmKeyBinding
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(271, 362);
+            this.Controls.Add(this.checkAdvert);
+            this.Controls.Add(this.cbAdvertKey);
+            this.Controls.Add(this.checkAdvertAlt);
+            this.Controls.Add(this.checkAdvertCtrl);
             this.Controls.Add(this.checkOverlay);
             this.Controls.Add(this.cbOverlayKey);
             this.Controls.Add(this.checkOverlayAlt);
@@ -291,16 +295,12 @@
             this.Controls.Add(this.cbNextGameKey);
             this.Controls.Add(this.checkNextGameAlt);
             this.Controls.Add(this.checkNextGameCtrl);
-            this.Controls.Add(this.checkStopTimer);
-            this.Controls.Add(this.cbStopTimerKey);
-            this.Controls.Add(this.checkStopTimerAlt);
-            this.Controls.Add(this.checkStopTimerCtrl);
-            this.Controls.Add(this.checkStartTimer);
+            this.Controls.Add(this.checkToggleTimer);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.cbStartTimerKey);
-            this.Controls.Add(this.checkStartTimerAlt);
-            this.Controls.Add(this.checkStartTimerCtrl);
+            this.Controls.Add(this.cbToggleTimerKey);
+            this.Controls.Add(this.checkToggleTimerAlt);
+            this.Controls.Add(this.checkToggleTimerCtrl);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -317,16 +317,12 @@
 
         #endregion
 
-        private ComboBox cbStartTimerKey;
-        private CheckBox checkStartTimerAlt;
-        private CheckBox checkStartTimerCtrl;
+        private ComboBox cbToggleTimerKey;
+        private CheckBox checkToggleTimerAlt;
+        private CheckBox checkToggleTimerCtrl;
         private Button btnOk;
         private Button button1;
-        private CheckBox checkStartTimer;
-        private CheckBox checkStopTimer;
-        private ComboBox cbStopTimerKey;
-        private CheckBox checkStopTimerAlt;
-        private CheckBox checkStopTimerCtrl;
+        private CheckBox checkToggleTimer;
         private CheckBox checkNextGame;
         private ComboBox cbNextGameKey;
         private CheckBox checkNextGameAlt;
@@ -339,5 +335,9 @@
         private ComboBox cbOverlayKey;
         private CheckBox checkOverlayAlt;
         private CheckBox checkOverlayCtrl;
+        private CheckBox checkAdvert;
+        private ComboBox cbAdvertKey;
+        private CheckBox checkAdvertAlt;
+        private CheckBox checkAdvertCtrl;
     }
 }

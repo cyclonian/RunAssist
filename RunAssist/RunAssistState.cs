@@ -42,8 +42,8 @@ namespace PositiveChaos.RunAssist
         public string WarningMessage { get; set; } = "{0} remaining";
         [XmlElement("WarningTime2")]
         public string WarningTime2 { get; set; } = "0:30";
-        [XmlElement("WarningMessage2")]
-        public string WarningMessage2 { get; set; } = "{0} remaining";
+        [XmlElement("Advert")]
+        public string Advert { get; set; } = string.Empty;
         [XmlElement("WarningAutoClipboard")]
         public bool WarningAutoClipboard { get; set; } = true;
         [XmlElement("TimeZone")]
@@ -73,16 +73,16 @@ namespace PositiveChaos.RunAssist
         [XmlArrayItem("Notes", typeof(string))]
         public List<string> Notes = new List<string>();
 
-        [XmlElement("KeybindStart")]
-        public KeyCombo KeybindStart { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.D0);
-        [XmlElement("KeybindStop")]
-        public KeyCombo KeybindStop { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.OemMinus);
+        [XmlElement("KeybindToggle")]
+        public KeyCombo KeybindToggle { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.D0);
         [XmlElement("KeybindNextGame")]
         public KeyCombo KeybindNextGame { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.Oemplus);
         [XmlElement("KeybindCopyRoles")]
         public KeyCombo KeybindCopyRoles { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.Oem6);
         [XmlElement("KeybindOverlay")]
         public KeyCombo KeybindOverlay { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.OemQuestion);
+        [XmlElement("KeybindAdvert")]
+        public KeyCombo KeybindAdvert { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.Oem4);
 
         public override string ToString()
         {
@@ -94,7 +94,7 @@ namespace PositiveChaos.RunAssist
             string szPadding = string.Empty;
             for (int i = 0; i < nNumPadding; i++)
                 szPadding += "0";
-            sb.AppendFormat("{0}{1} /// {2}{3}", GameName, nGameNumber.ToString(szPadding), Password, Environment.NewLine);
+            sb.AppendFormat("{0}{1} /// {2}{3}", GameName, nGameNumber.ToString(szPadding), string.IsNullOrWhiteSpace(Password) ? "[no password]" : Password, Environment.NewLine);
             if (!string.IsNullOrWhiteSpace(Region))
                 sb.AppendLine(Region);
             if (!string.IsNullOrWhiteSpace(Note))
