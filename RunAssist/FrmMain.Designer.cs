@@ -101,10 +101,15 @@
             this.btnRolesToClipboard = new System.Windows.Forms.Button();
             this.btnKeyBinding = new System.Windows.Forms.Button();
             this.btnAdjustOverlay = new System.Windows.Forms.Button();
+            this.numAutoTimerDelay = new System.Windows.Forms.NumericUpDown();
+            this.lblAutoTimerDelay = new System.Windows.Forms.Label();
+            this.checkAutoTimer = new System.Windows.Forms.CheckBox();
+            this.bgWorker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.numGameNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoTimerDelay)).BeginInit();
             this.SuspendLayout();
             // 
             // comboPlayerName1
@@ -164,7 +169,7 @@
             this.btnSave.Location = new System.Drawing.Point(373, 559);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(143, 52);
-            this.btnSave.TabIndex = 35;
+            this.btnSave.TabIndex = 39;
             this.btnSave.Text = "Save to File";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -815,7 +820,7 @@
             this.btnKeyBinding.Location = new System.Drawing.Point(292, 559);
             this.btnKeyBinding.Name = "btnKeyBinding";
             this.btnKeyBinding.Size = new System.Drawing.Size(74, 51);
-            this.btnKeyBinding.TabIndex = 72;
+            this.btnKeyBinding.TabIndex = 38;
             this.btnKeyBinding.Text = "Key Binding...";
             this.btnKeyBinding.UseVisualStyleBackColor = true;
             this.btnKeyBinding.Click += new System.EventHandler(this.btnKeyBinding_Click);
@@ -826,16 +831,65 @@
             this.btnAdjustOverlay.Location = new System.Drawing.Point(373, 529);
             this.btnAdjustOverlay.Name = "btnAdjustOverlay";
             this.btnAdjustOverlay.Size = new System.Drawing.Size(143, 23);
-            this.btnAdjustOverlay.TabIndex = 73;
+            this.btnAdjustOverlay.TabIndex = 37;
             this.btnAdjustOverlay.Text = "Adjust Overlay...";
             this.btnAdjustOverlay.UseVisualStyleBackColor = true;
             this.btnAdjustOverlay.Click += new System.EventHandler(this.btnAdjustOverlay_Click);
+            // 
+            // numAutoTimerDelay
+            // 
+            this.numAutoTimerDelay.Location = new System.Drawing.Point(423, 501);
+            this.numAutoTimerDelay.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.numAutoTimerDelay.Name = "numAutoTimerDelay";
+            this.numAutoTimerDelay.Size = new System.Drawing.Size(43, 23);
+            this.numAutoTimerDelay.TabIndex = 36;
+            this.numAutoTimerDelay.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // lblAutoTimerDelay
+            // 
+            this.lblAutoTimerDelay.Location = new System.Drawing.Point(472, 500);
+            this.lblAutoTimerDelay.Name = "lblAutoTimerDelay";
+            this.lblAutoTimerDelay.Size = new System.Drawing.Size(44, 23);
+            this.lblAutoTimerDelay.TabIndex = 37;
+            this.lblAutoTimerDelay.Text = "Delay";
+            this.lblAutoTimerDelay.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkAutoTimer
+            // 
+            this.checkAutoTimer.Checked = true;
+            this.checkAutoTimer.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkAutoTimer.Location = new System.Drawing.Point(292, 503);
+            this.checkAutoTimer.Name = "checkAutoTimer";
+            this.checkAutoTimer.Size = new System.Drawing.Size(125, 21);
+            this.checkAutoTimer.TabIndex = 35;
+            this.checkAutoTimer.Text = "Auto Timer on NG";
+            this.checkAutoTimer.UseVisualStyleBackColor = true;
+            this.checkAutoTimer.CheckedChanged += new System.EventHandler(this.checkAutoTimer_CheckedChanged);
+            // 
+            // bgWorker
+            // 
+            this.bgWorker.WorkerReportsProgress = true;
+            this.bgWorker.WorkerSupportsCancellation = true;
+            this.bgWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgWorker_DoWork);
+            this.bgWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgWorker_ProgressChanged);
+            this.bgWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgWorker_RunWorkerCompleted);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(528, 636);
+            this.Controls.Add(this.checkAutoTimer);
+            this.Controls.Add(this.lblAutoTimerDelay);
+            this.Controls.Add(this.numAutoTimerDelay);
             this.Controls.Add(this.btnAdjustOverlay);
             this.Controls.Add(this.btnKeyBinding);
             this.Controls.Add(this.btnRolesToClipboard);
@@ -918,6 +972,7 @@
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoTimerDelay)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -996,5 +1051,9 @@
         private Button btnRolesToClipboard;
         private Button btnKeyBinding;
         private Button btnAdjustOverlay;
+        private Label lblAutoTimerDelay;
+        private NumericUpDown numAutoTimerDelay;
+        private CheckBox checkAutoTimer;
+        private System.ComponentModel.BackgroundWorker bgWorker;
     }
 }

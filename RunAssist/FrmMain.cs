@@ -14,6 +14,8 @@ namespace PositiveChaos.RunAssist
         protected FrmOverlay _frmOverlay = new FrmOverlay();
         protected Point _overlayLocation = new Point();
         protected Size _overlaySize = new Size();
+        protected Color _overlayForeColor = ColorTranslator.FromHtml("#FF808080");
+        protected Color _overlayBackColor = ColorTranslator.FromHtml("#222222");
         protected FrmOverlayLocation _frmOverlayLocation = new FrmOverlayLocation();
         protected SoundPlayer _playerStart = new SoundPlayer();
         protected SoundPlayer _playerFinish = new SoundPlayer();
@@ -73,6 +75,7 @@ namespace PositiveChaos.RunAssist
             {
                 _frmOverlay.Location = _overlayLocation;
                 _frmOverlay.Size = _overlaySize;
+                _frmOverlay.SetColors(_overlayForeColor, _overlayBackColor);
                 _frmOverlay.SetContent(lblTimer.Text, _state.ToStringOverlayAssignments());
                 _frmOverlay.Show(this);
             }
@@ -99,13 +102,17 @@ namespace PositiveChaos.RunAssist
         protected void HandleWarningEvent()
         {
             PlaySoundWarning();
-            Clipboard.SetText(string.Format(tbWarningMsg.Text, tbWarningTime.Text));
+            string szClip = string.Empty;
+            Helpers.TryFormat(tbWarningMsg.Text, out szClip, tbWarningTime.Text);
+            Clipboard.SetText(szClip);
         }
 
         protected void HandleWarning2Event()
         {
             PlaySoundWarning();
-            Clipboard.SetText(string.Format(tbWarningMsg.Text, tbWarningTime2.Text));
+            string szClip = string.Empty;
+            Helpers.TryFormat(tbWarningMsg.Text, out szClip, tbWarningTime2.Text);
+            Clipboard.SetText(szClip);
         }
 
         protected void PlaySoundStart()
@@ -329,14 +336,21 @@ namespace PositiveChaos.RunAssist
             int nGameNumber = 0;
             if(int.TryParse(state.GameNumber, out nGameNumber))
                 numGameNumber.Value = nGameNumber;
-            tbPassword.Text = state.Password;
-            comboNote.Text = state.Note;
-            tbRunTime.Text = state.RunTime;
-            tbWarningTime.Text = state.WarningTime;
-            tbWarningTime2.Text = state.WarningTime2;
-            tbWarningMsg.Text = state.WarningMessage;
-            tbAdvert.Text = state.Advert;
-            tbTimezone.Text = state.TimeZone;
+            tbPassword.Text = Helpers.GetSafeVal(ValType.Password, state.Password);
+            comboNote.Text = Helpers.GetSafeVal(ValType.Note, state.Note);
+            tbRunTime.Text = Helpers.GetSafeVal(ValType.RunTime, state.RunTime);
+            tbWarningTime.Text = Helpers.GetSafeVal(ValType.WarningTime, state.WarningTime);
+            tbWarningTime2.Text = Helpers.GetSafeVal(ValType.WarningTime2, state.WarningTime2);
+            tbWarningMsg.Text = Helpers.GetSafeVal(ValType.WarningMessage, state.WarningMessage);
+            tbAdvert.Text = Helpers.GetSafeVal(ValType.Advert, state.Advert);
+            tbTimezone.Text = Helpers.GetSafeVal(ValType.TimeZone, state.TimeZone);
+            bool bAutoTimer = false;
+            bool.TryParse(state.AutoTimer, out bAutoTimer);
+            checkAutoTimer.Checked = bAutoTimer;
+
+            int nAutoTimerDelay = 10;
+            int.TryParse(state.AutoTimerDelay, out nAutoTimerDelay);
+            numAutoTimerDelay.Value = nAutoTimerDelay;
 
             int nOverlayX = Location.X + Width;
             if (!string.IsNullOrWhiteSpace(state.OverlayLocationX))
@@ -353,6 +367,9 @@ namespace PositiveChaos.RunAssist
             if (!string.IsNullOrWhiteSpace(state.OverlayHeight))
                 int.TryParse(state.OverlayHeight, out nOverlayHeight);
             _overlaySize = new Size(nOverlayWidth, nOverlayHeight);
+
+            _overlayForeColor = ColorTranslator.FromHtml(state.OverlayForeColor);
+            _overlayBackColor = ColorTranslator.FromHtml(state.OverlayBackColor);
 
             decimal dNumPadding = 0;
             if(!decimal.TryParse(state.NumPadding, out dNumPadding))
@@ -409,6 +426,8 @@ namespace PositiveChaos.RunAssist
             _state.WarningMessage = tbWarningMsg.Text;
             _state.Advert = tbAdvert.Text;
             _state.TimeZone = tbTimezone.Text;
+            _state.AutoTimer = checkAutoTimer.Checked.ToString();
+            _state.AutoTimerDelay = numAutoTimerDelay.Value.ToString();
             _state.NumPadding = numPadding.Value.ToString();
 
             if (bSaveToFile)
@@ -560,7 +579,7 @@ namespace PositiveChaos.RunAssist
             }
         }
 
-        protected void PerformNextGame(bool bIncrement)
+        protected void PerformNextGame(bool bIncrement, bool bAutoNextGame)
         {
             if (_timer.IsRunning)
                 _timer.Stop();
@@ -588,6 +607,19 @@ namespace PositiveChaos.RunAssist
             _frmOverlay.SetContent(lblTimer.Text, _state.ToStringOverlayAssignments());
 
             btnStart.Focus();
+
+            if(bAutoNextGame && _state.AutoTimerVal)
+            {
+                if (bgWorker.IsBusy)
+                {
+                    bgWorker.CancelAsync();
+                    while (bgWorker.IsBusy)
+                        Application.DoEvents();
+                }
+
+                KeyValuePair<WorkerKey, int> arg = new KeyValuePair<WorkerKey, int>(WorkerKey.AutoStart, _state.AutoTimerDelayVal);
+                bgWorker.RunWorkerAsync(arg);
+            }
         }
 
         protected void PerformCopyRoles()
@@ -620,7 +652,7 @@ namespace PositiveChaos.RunAssist
 
         private void btnIncriment_Click(object sender, EventArgs e)
         {
-            PerformNextGame(true);
+            PerformNextGame(true, true);
         }
 
         private void tbRunTime_Leave(object sender, EventArgs e)
@@ -683,7 +715,7 @@ namespace PositiveChaos.RunAssist
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-            PerformNextGame(false);
+            PerformNextGame(false, false);
         }
 
         private void btnClear_Clicked(object sender, EventArgs e)
@@ -734,7 +766,7 @@ namespace PositiveChaos.RunAssist
                         PerformStart();
                     break;
                 case RunAssistKey.NextGame:
-                    PerformNextGame(true);
+                    PerformNextGame(true, true);
                     break;
                 case RunAssistKey.CopyRoles:
                     PerformCopyRoles();
@@ -772,18 +804,33 @@ namespace PositiveChaos.RunAssist
         {
             _frmOverlayLocation.Location = _overlayLocation;
             _frmOverlayLocation.Size = _overlaySize;
-            if(_frmOverlayLocation.ShowDialog(this) == DialogResult.OK)
+            _frmOverlayLocation.SetColors(_overlayForeColor, _overlayBackColor);
+
+            bool bIsOverlayVisible = _frmOverlay.Visible;
+
+            if (bIsOverlayVisible)
+                _frmOverlay.Hide();
+
+            if (_frmOverlayLocation.ShowDialog(this) == DialogResult.OK)
             {
                 _overlayLocation = _frmOverlayLocation.Location;
                 _overlaySize = _frmOverlayLocation.Size;
+                _overlayForeColor = _frmOverlayLocation.OverlayForeColor;
+                _overlayBackColor = _frmOverlayLocation.OverlayBackColor;
 
                 _state.OverlayLocationX = _overlayLocation.X.ToString();
                 _state.OverlayLocationY = _overlayLocation.Y.ToString();
                 _state.OverlayWidth = _overlaySize.Width.ToString();
                 _state.OverlayHeight = _overlaySize.Height.ToString();
 
-                SaveState(false, false);
+                _state.OverlayForeColor = ColorTranslator.ToHtml(_overlayForeColor);
+                _state.OverlayBackColor = ColorTranslator.ToHtml(_overlayBackColor);
+
+                SaveState(false, true);
             }
+
+            if (bIsOverlayVisible)
+                PerformOverlay();
         }
 
         private void FrmMain_LocationChanged(object sender, EventArgs e)
@@ -792,6 +839,57 @@ namespace PositiveChaos.RunAssist
             int nOverlayY = Location.Y;
             if (string.IsNullOrWhiteSpace(_state.OverlayLocationX) && string.IsNullOrWhiteSpace(_state.OverlayLocationY))
                 _overlayLocation = new Point(nOverlayX, nOverlayY);
+        }
+
+        private void checkAutoTimer_CheckedChanged(object sender, EventArgs e)
+        {
+            numAutoTimerDelay.Enabled = checkAutoTimer.Checked;
+        }
+
+        private void bgWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            if (bgWorker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            KeyValuePair<WorkerKey, int> kvp = new KeyValuePair<WorkerKey, int>();
+            if (e.Argument is KeyValuePair<WorkerKey, int>)
+                kvp = (KeyValuePair<WorkerKey, int>)e.Argument;
+            else
+                return;
+
+            switch(kvp.Key)
+            {
+                case WorkerKey.AutoStart:
+                    Thread.Sleep(kvp.Value * 1000);
+                    e.Result = new KeyValuePair<WorkerKey, int>(kvp.Key, kvp.Value);
+                    break;
+                default: break;
+            }
+        }
+
+        private void bgWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+
+        }
+
+        private void bgWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            KeyValuePair<WorkerKey, int> kvp = new KeyValuePair<WorkerKey, int>();
+            if (e.Result is KeyValuePair<WorkerKey, int>)
+                kvp = (KeyValuePair<WorkerKey, int>)e.Result;
+            else
+                return;
+
+            switch (kvp.Key)
+            {
+                case WorkerKey.AutoStart:
+                    PerformStart();
+                    break;
+                default: break;
+            }
         }
 
         #endregion Event Handlers

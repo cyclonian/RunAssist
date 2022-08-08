@@ -35,6 +35,13 @@ namespace PositiveChaos.RunAssist
             SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
         }
 
+        public void SetColors(Color foreColor, Color backColor)
+        {
+            lblTimer.ForeColor = foreColor;
+            lblAssignments.ForeColor = foreColor;
+            BackColor = backColor;
+        }
+
         public void SetContent(string szTimer, string szAssignments)
         {
             lblTimer.Text = szTimer;

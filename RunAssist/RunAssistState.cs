@@ -48,6 +48,30 @@ namespace PositiveChaos.RunAssist
         public bool WarningAutoClipboard { get; set; } = true;
         [XmlElement("TimeZone")]
         public string TimeZone { get; set; } = "EST";
+        [XmlElement("AutoTimer")]
+        public string AutoTimer { get; set; } = "true";
+        [XmlIgnore]
+        public bool AutoTimerVal
+        {
+            get
+            {
+                bool bVal = false;
+                bool.TryParse(AutoTimer, out bVal);
+                return bVal;
+            }
+        }
+        [XmlElement("AutoTimerDelay")]
+        public string AutoTimerDelay { get; set; } = "10";
+        [XmlIgnore]
+        public int AutoTimerDelayVal
+        {
+            get
+            {
+                int nVal = 10;
+                int.TryParse(AutoTimerDelay, out nVal);
+                return nVal;
+            }
+        }
         [XmlElement("OverlayLocationX")]
         public string OverlayLocationX { get; set; } = string.Empty;
         [XmlElement("OverlayLocationY")]
@@ -56,6 +80,10 @@ namespace PositiveChaos.RunAssist
         public string OverlayWidth { get; set; } = "300";
         [XmlElement("OverlayHeight")]
         public string OverlayHeight { get; set; } = "450";
+        [XmlElement("OverlayForeColor")]
+        public string OverlayForeColor { get; set; } = "#FF808080";
+        [XmlElement("OverlayBackColor")]
+        public string OverlayBackColor { get; set; } = "#222222";
 
         [XmlArray("GameNames")]
         [XmlArrayItem("GameNames", typeof(string))]
@@ -102,8 +130,12 @@ namespace PositiveChaos.RunAssist
                 string szMinute = "6";
                 string[] split = RunTime.Split(":");
                 szMinute = split[0];
-                sb.AppendFormat(Note, szMinute);
-                sb.AppendLine();
+                string szTime = szMinute;
+                if (split.Length > 1 && split[1] != "00")
+                    szTime = RunTime;
+                string szNote = string.Empty;
+                Helpers.TryFormat(Note, out szNote, szTime);
+                sb.AppendLine(szNote);
             }
 
             sb.AppendLine();
