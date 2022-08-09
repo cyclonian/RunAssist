@@ -47,6 +47,7 @@ namespace PositiveChaos.RunAssist
 
             tbTimezone.Text = Helpers.GetSafeVal(ValType.TimeZone, state.TimeZone);
             numPadding.Value = state.NumPaddingVal;
+            checkIncludeRegion.Checked = state.IncludeRegionVal;
         }
     }
 }
