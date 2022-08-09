@@ -35,11 +35,12 @@ namespace PositiveChaos.RunAssist
             SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
         }
 
-        public void SetColors(Color foreColor, Color backColor)
+        public void SetValues(Color foreColor, Color backColor, bool bOverlayShowPlayersZones)
         {
             lblTimer.ForeColor = foreColor;
             lblAssignments.ForeColor = foreColor;
             BackColor = backColor;
+            lblAssignments.Visible = bOverlayShowPlayersZones;
         }
 
         public void SetContent(string szTimer, string szAssignments)

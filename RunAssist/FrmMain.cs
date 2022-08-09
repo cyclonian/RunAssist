@@ -16,6 +16,7 @@ namespace PositiveChaos.RunAssist
         protected Size _overlaySize = new Size();
         protected Color _overlayForeColor = ColorTranslator.FromHtml("#FF808080");
         protected Color _overlayBackColor = ColorTranslator.FromHtml("#222222");
+        protected bool _bOverlayShowPlayersZones = true;
         protected FrmOverlayLocation _frmOverlayLocation = new FrmOverlayLocation();
         protected SoundPlayer _playerStart = new SoundPlayer();
         protected SoundPlayer _playerFinish = new SoundPlayer();
@@ -46,6 +47,9 @@ namespace PositiveChaos.RunAssist
 
             SetListSources();
 
+            lblTimer.ForeColor = ColorTranslator.FromHtml(_state.OverlayForeColor);
+            lblTimer.BackColor = ColorTranslator.FromHtml(_state.OverlayBackColor);
+
             _timer.TimeChanged += () => HandleTimerChanged();
             _timer.CountdownFinished += () => HandleTimerFinished();
             _timer.CountdownWarning += () => HandleWarningEvent();
@@ -75,7 +79,7 @@ namespace PositiveChaos.RunAssist
             {
                 _frmOverlay.Location = _overlayLocation;
                 _frmOverlay.Size = _overlaySize;
-                _frmOverlay.SetColors(_overlayForeColor, _overlayBackColor);
+                _frmOverlay.SetValues(_overlayForeColor, _overlayBackColor, _bOverlayShowPlayersZones);
                 _frmOverlay.SetContent(lblTimer.Text, _state.ToStringOverlayAssignments());
                 _frmOverlay.Show(this);
             }
@@ -324,14 +328,6 @@ namespace PositiveChaos.RunAssist
             ReadPlayerInfo(state, comboPlayerName7, comboPlayerZones7, 6);
             ReadPlayerInfo(state, comboPlayerName8, comboPlayerZones8, 7);
 
-            switch(state.Region)
-            {
-                case "Americas": comboRegion.SelectedIndex = 1; break;
-                case "Europe": comboRegion.SelectedIndex = 2; break;
-                case "Asia": comboRegion.SelectedIndex = 3; break;
-                default: comboRegion.SelectedIndex = 0; break;
-            }
-
             comboGameName.Text = state.GameName;
             int nGameNumber = 0;
             if(int.TryParse(state.GameNumber, out nGameNumber))
@@ -343,14 +339,9 @@ namespace PositiveChaos.RunAssist
             tbWarningTime2.Text = Helpers.GetSafeVal(ValType.WarningTime2, state.WarningTime2);
             tbWarningMsg.Text = Helpers.GetSafeVal(ValType.WarningMessage, state.WarningMessage);
             tbAdvert.Text = Helpers.GetSafeVal(ValType.Advert, state.Advert);
-            tbTimezone.Text = Helpers.GetSafeVal(ValType.TimeZone, state.TimeZone);
-            bool bAutoTimer = false;
-            bool.TryParse(state.AutoTimer, out bAutoTimer);
-            checkAutoTimer.Checked = bAutoTimer;
-
-            int nAutoTimerDelay = 10;
-            int.TryParse(state.AutoTimerDelay, out nAutoTimerDelay);
-            numAutoTimerDelay.Value = nAutoTimerDelay;
+            checkAutoTimer.Checked = state.AutoTimerVal;
+            numAutoTimerDelay.Value = state.AutoTimerDelayVal;
+            checkIncludeTimestamp.Checked = state.IncludeTimestampVal;
 
             int nOverlayX = Location.X + Width;
             if (!string.IsNullOrWhiteSpace(state.OverlayLocationX))
@@ -370,11 +361,8 @@ namespace PositiveChaos.RunAssist
 
             _overlayForeColor = ColorTranslator.FromHtml(state.OverlayForeColor);
             _overlayBackColor = ColorTranslator.FromHtml(state.OverlayBackColor);
+            _bOverlayShowPlayersZones = state.OverlayShowPlayersZonesVal;
 
-            decimal dNumPadding = 0;
-            if(!decimal.TryParse(state.NumPadding, out dNumPadding))
-                dNumPadding = 2;
-            numPadding.Value = dNumPadding;
             BindKeysFromState(state);
         }
 
@@ -418,17 +406,15 @@ namespace PositiveChaos.RunAssist
             _state.Password = tbPassword.Text;
             _state.Note = comboNote.Text;
             AddNote(comboNote);
-            _state.Region = comboRegion.Text;
 
             _state.RunTime = tbRunTime.Text;
             _state.WarningTime = tbWarningTime.Text;
             _state.WarningTime2 = tbWarningTime2.Text;
             _state.WarningMessage = tbWarningMsg.Text;
             _state.Advert = tbAdvert.Text;
-            _state.TimeZone = tbTimezone.Text;
             _state.AutoTimer = checkAutoTimer.Checked.ToString();
             _state.AutoTimerDelay = numAutoTimerDelay.Value.ToString();
-            _state.NumPadding = numPadding.Value.ToString();
+            _state.IncludeTimestamp = checkIncludeTimestamp.Checked.ToString();
 
             if (bSaveToFile)
             {
@@ -802,9 +788,7 @@ namespace PositiveChaos.RunAssist
 
         private void btnAdjustOverlay_Click(object sender, EventArgs e)
         {
-            _frmOverlayLocation.Location = _overlayLocation;
-            _frmOverlayLocation.Size = _overlaySize;
-            _frmOverlayLocation.SetColors(_overlayForeColor, _overlayBackColor);
+            _frmOverlayLocation.SetValues(_overlayForeColor, _overlayBackColor, _bOverlayShowPlayersZones, _overlayLocation, _overlaySize);
 
             bool bIsOverlayVisible = _frmOverlay.Visible;
 
@@ -813,10 +797,11 @@ namespace PositiveChaos.RunAssist
 
             if (_frmOverlayLocation.ShowDialog(this) == DialogResult.OK)
             {
-                _overlayLocation = _frmOverlayLocation.Location;
-                _overlaySize = _frmOverlayLocation.Size;
+                _overlayLocation = _frmOverlayLocation.OverlayLocation;
+                _overlaySize = _frmOverlayLocation.OverlaySize;
                 _overlayForeColor = _frmOverlayLocation.OverlayForeColor;
                 _overlayBackColor = _frmOverlayLocation.OverlayBackColor;
+                _bOverlayShowPlayersZones = _frmOverlayLocation.OverlayShowPlayersZones;
 
                 _state.OverlayLocationX = _overlayLocation.X.ToString();
                 _state.OverlayLocationY = _overlayLocation.Y.ToString();
@@ -825,8 +810,12 @@ namespace PositiveChaos.RunAssist
 
                 _state.OverlayForeColor = ColorTranslator.ToHtml(_overlayForeColor);
                 _state.OverlayBackColor = ColorTranslator.ToHtml(_overlayBackColor);
+                _state.OverlayShowPlayersZones = _bOverlayShowPlayersZones.ToString();
 
                 SaveState(false, true);
+
+                lblTimer.ForeColor = _frmOverlayLocation.OverlayForeColor;
+                lblTimer.BackColor = _frmOverlayLocation.OverlayBackColor;
             }
 
             if (bIsOverlayVisible)
@@ -890,6 +879,37 @@ namespace PositiveChaos.RunAssist
                     break;
                 default: break;
             }
+        }
+
+        private void btnOptions_Click(object sender, EventArgs e)
+        {
+            FrmOptions frmOptions = new FrmOptions();
+            frmOptions.ReadStateContent(_state);
+            if(frmOptions.ShowDialog(this) == DialogResult.OK)
+            {
+                _state.Region = frmOptions.GameRegion;
+                _state.IncludeRegion = frmOptions.GameRegionInclude;
+                _state.TimeZone = frmOptions.TimeZone;
+                _state.NumPadding = frmOptions.NumPadding;
+                SaveState(false, true);
+            }
+        }
+        private void btnClearAll_Click(object sender, EventArgs e)
+        {
+            comboPlayerName2.Text = string.Empty;
+            comboPlayerZones2.Text = string.Empty;
+            comboPlayerName3.Text = string.Empty;
+            comboPlayerZones3.Text = string.Empty;
+            comboPlayerName4.Text = string.Empty;
+            comboPlayerZones4.Text = string.Empty;
+            comboPlayerName5.Text = string.Empty;
+            comboPlayerZones5.Text = string.Empty;
+            comboPlayerName6.Text = string.Empty;
+            comboPlayerZones6.Text = string.Empty;
+            comboPlayerName7.Text = string.Empty;
+            comboPlayerZones7.Text = string.Empty;
+            comboPlayerName8.Text = string.Empty;
+            comboPlayerZones8.Text = string.Empty;
         }
 
         #endregion Event Handlers

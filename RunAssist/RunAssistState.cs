@@ -28,10 +28,32 @@ namespace PositiveChaos.RunAssist
         public string GameNumber { get; set; } = string.Empty;
         [XmlElement("NumPadding")]
         public string NumPadding { get; set; } = "2";
+        [XmlIgnore]
+        public int NumPaddingVal
+        {
+            get
+            {
+                int nVal = 10;
+                int.TryParse(NumPadding, out nVal);
+                return nVal;
+            }
+        }
         [XmlElement("Password")]
         public string Password { get; set; } = string.Empty;
         [XmlElement("Region")]
         public string Region { get; set; } = string.Empty;
+        [XmlElement("IncludeRegion")]
+        public string IncludeRegion { get; set; } = "True";
+        [XmlIgnore]
+        public bool IncludeRegionVal
+        {
+            get
+            {
+                bool bVal = false;
+                bool.TryParse(IncludeRegion, out bVal);
+                return bVal;
+            }
+        }
         [XmlElement("Note")]
         public string Note { get; set; } = "{0} minute timed runs";
         [XmlElement("RunTime")]
@@ -49,7 +71,7 @@ namespace PositiveChaos.RunAssist
         [XmlElement("TimeZone")]
         public string TimeZone { get; set; } = "EST";
         [XmlElement("AutoTimer")]
-        public string AutoTimer { get; set; } = "true";
+        public string AutoTimer { get; set; } = "True";
         [XmlIgnore]
         public bool AutoTimerVal
         {
@@ -85,6 +107,18 @@ namespace PositiveChaos.RunAssist
         [XmlElement("OverlayBackColor")]
         public string OverlayBackColor { get; set; } = "#222222";
 
+        [XmlElement("OverlayShowPlayersZones")]
+        public string OverlayShowPlayersZones { get; set; } = "True";
+        [XmlIgnore]
+        public bool OverlayShowPlayersZonesVal
+        {
+            get
+            {
+                bool bVal = false;
+                bool.TryParse(OverlayShowPlayersZones, out bVal);
+                return bVal;
+            }
+        }
         [XmlArray("GameNames")]
         [XmlArrayItem("GameNames", typeof(string))]
         public List<string> GameNames = new List<string>();
@@ -112,6 +146,18 @@ namespace PositiveChaos.RunAssist
         [XmlElement("KeybindAdvert")]
         public KeyCombo KeybindAdvert { get; set; } = new KeyCombo(ModifierKeys.Control, Keys.Oem4);
 
+        [XmlElement("IncludeTimestamp")]
+        public string IncludeTimestamp { get; set; } = "True";
+        [XmlIgnore]
+        public bool IncludeTimestampVal
+        {
+            get
+            {
+                bool bVal = false;
+                bool.TryParse(IncludeTimestamp, out bVal);
+                return bVal;
+            }
+        }
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -123,7 +169,7 @@ namespace PositiveChaos.RunAssist
             for (int i = 0; i < nNumPadding; i++)
                 szPadding += "0";
             sb.AppendFormat("{0}{1} /// {2}{3}", GameName, nGameNumber.ToString(szPadding), string.IsNullOrWhiteSpace(Password) ? "[no password]" : Password, Environment.NewLine);
-            if (!string.IsNullOrWhiteSpace(Region))
+            if (IncludeRegionVal && !string.IsNullOrWhiteSpace(Region))
                 sb.AppendLine(Region);
             if (!string.IsNullOrWhiteSpace(Note))
             {
@@ -150,8 +196,11 @@ namespace PositiveChaos.RunAssist
                 }
             }
 
-            sb.AppendLine();
-            sb.AppendFormat("Timestamp: {0} {1}", DateTime.Now.ToString("hh:mm:ss tt"), TimeZone);
+            if (IncludeTimestampVal)
+            {
+                sb.AppendLine();
+                sb.AppendFormat("Timestamp: {0} {1}", DateTime.Now.ToString("hh:mm:ss tt"), TimeZone);
+            }
 
             return sb.ToString();
         }
