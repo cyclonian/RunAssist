@@ -30,3 +30,9 @@ If you wish to provide feedback
 My contact is fiftytwoeighty#1333 on Discord or cyclonian on D2JSP.
 
 Please be kind / civil.
+
+.NET Framework
+
+You can get the latest .NET Framework directly from Microsoft.  This is the link for the 4.8 Runtime (current as of this edit):
+
+https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-web-installer
